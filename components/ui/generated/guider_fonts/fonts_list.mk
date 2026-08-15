@@ -1,0 +1,1 @@
+GEN_CSRCS += lv_font_Alatsi_Regular_40.c
