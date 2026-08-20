@@ -23,13 +23,71 @@ typedef struct
 	lv_obj_t *screen_2_tileview_1;
 	lv_obj_t *screen_2_tileview_1_tile;
 	lv_obj_t *screen_2_cont_1;
+	lv_obj_t *screen_2_img_1;
 	lv_obj_t *screen_2_cont_2;
+	lv_obj_t *screen_2_img_5;
 	lv_obj_t *screen_2_cont_4;
 	lv_obj_t *screen_2_cont_3;
+	lv_obj_t *screen_2_img_2;
 	lv_obj_t *screen_2_cont_5;
+	lv_obj_t *screen_2_img_3;
 	lv_obj_t *screen_2_cont_6;
+	lv_obj_t *screen_2_img_4;
 	lv_obj_t *screen_2_animimg_1;
 	lv_obj_t *screen_2_digital_clock_1;
+	lv_obj_t *screen_3;
+	bool screen_3_del;
+	lv_obj_t *screen_3_img_1;
+	lv_obj_t *screen_4;
+	bool screen_4_del;
+	lv_obj_t *screen_4_img_1;
+	lv_obj_t *screen_5;
+	bool screen_5_del;
+	lv_obj_t *screen_5_img_1;
+	lv_obj_t *screen_6;
+	bool screen_6_del;
+	lv_obj_t *screen_6_img_2;
+	lv_obj_t *screen_7;
+	bool screen_7_del;
+	lv_obj_t *screen_7_cont_1;
+	lv_obj_t *screen_7_label_1;
+	lv_obj_t *screen_7_cont_2;
+	lv_obj_t *screen_7_label_2;
+	lv_obj_t *screen_7_cont_3;
+	lv_obj_t *screen_7_label_13;
+	lv_obj_t *screen_7_cont_4;
+	lv_obj_t *screen_7_label_5;
+	lv_obj_t *screen_7_cont_5;
+	lv_obj_t *screen_7_label_8;
+	lv_obj_t *screen_7_cont_9;
+	lv_obj_t *screen_7_label_11;
+	lv_obj_t *screen_7_cont_7;
+	lv_obj_t *screen_7_label_6;
+	lv_obj_t *screen_7_cont_6;
+	lv_obj_t *screen_7_label_3;
+	lv_obj_t *screen_7_cont_13;
+	lv_obj_t *screen_7_label_9;
+	lv_obj_t *screen_7_cont_12;
+	lv_obj_t *screen_7_label_14;
+	lv_obj_t *screen_7_cont_11;
+	lv_obj_t *screen_7_label_10;
+	lv_obj_t *screen_7_cont_17;
+	lv_obj_t *screen_7_label_7;
+	lv_obj_t *screen_7_cont_16;
+	lv_obj_t *screen_7_label_15;
+	lv_obj_t *screen_7_cont_15;
+	lv_obj_t *screen_7_label_12;
+	lv_obj_t *screen_7_cont_21;
+	lv_obj_t *screen_7_img_1;
+	lv_obj_t *screen_7_cont_20;
+	lv_obj_t *screen_7_label_16;
+	lv_obj_t *screen_7_cont_22;
+	lv_obj_t *screen_7_label_17;
+	lv_obj_t *screen_7_cont_23;
+	lv_obj_t *screen_7_label_18;
+	lv_obj_t *screen_7_cont_24;
+	lv_obj_t *screen_7_label_19;
+	lv_obj_t *screen_7_label_20;
 }lv_ui;
 
 typedef void (*ui_setup_scr_t)(lv_ui * ui);
@@ -54,6 +112,16 @@ extern lv_ui guider_ui;
 
 
 void setup_scr_screen_2(lv_ui *ui);
+void setup_scr_screen_3(lv_ui *ui);
+void setup_scr_screen_4(lv_ui *ui);
+void setup_scr_screen_5(lv_ui *ui);
+void setup_scr_screen_6(lv_ui *ui);
+void setup_scr_screen_7(lv_ui *ui);
+LV_IMG_DECLARE(_gaming_alpha_34x33);
+LV_IMG_DECLARE(_tool_alpha_42x43);
+LV_IMG_DECLARE(_calendar1_alpha_29x35);
+LV_IMG_DECLARE(_music1_alpha_33x38);
+LV_IMG_DECLARE(_clock_alpha_33x31);
 #include "extra/widgets/animimg/lv_animimg.h"
 LV_IMG_DECLARE(screen_2_animimg_11);
 LV_IMG_DECLARE(screen_2_animimg_12);
@@ -84,8 +152,16 @@ LV_IMG_DECLARE(screen_2_animimg_152);
 LV_IMG_DECLARE(screen_2_animimg_154);
 LV_IMG_DECLARE(screen_2_animimg_156);
 LV_IMG_DECLARE(screen_2_animimg_158);
+LV_IMG_DECLARE(_gaming_alpha_100x100);
+LV_IMG_DECLARE(_calendar1_alpha_100x100);
+LV_IMG_DECLARE(_music1_alpha_100x100);
+LV_IMG_DECLARE(_clock_alpha_100x100);
+LV_IMG_DECLARE(_delate_alpha_41x25);
 
 LV_FONT_DECLARE(lv_font_Alatsi_Regular_40)
+LV_FONT_DECLARE(lv_font_Acme_Regular_30)
+LV_FONT_DECLARE(lv_font_Acme_Regular_50)
+LV_FONT_DECLARE(lv_font_Acme_Regular_35)
 
 
 #ifdef __cplusplus
