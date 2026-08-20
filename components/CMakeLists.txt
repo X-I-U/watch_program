@@ -4,6 +4,7 @@ set(src_dirs
             LCD
             MYNTC
             WIFISTA
+            calculator
             espressif__esp_lcd_tk018
             ui
             ui/generated
@@ -19,6 +20,7 @@ set(include_dirs
             LCD
             MYNTC
             WIFISTA
+            calculator
             espressif__esp_lcd_tk018/include
             ui
             ui/generated

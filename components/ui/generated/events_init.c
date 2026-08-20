@@ -10,6 +10,7 @@
 #include "events_init.h"
 #include <stdio.h>
 #include "lvgl.h"
+#include "calc_ui.h"
 
 #if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
 #include "freemaster_client.h"
@@ -164,6 +165,7 @@ static void screen_7_event_handler (lv_event_t *e)
 void events_init_screen_7 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_7, screen_7_event_handler, LV_EVENT_ALL, ui);
+    calc_ui_screen_created(ui);   /* 计算器：绑定按键 + 初始化显示（非生成代码，重导出需重加此行） */
 }
 
 
