@@ -10,6 +10,9 @@
  * 线程安全：本文件的 s_calc 只在 LVGL 任务上下文（事件回调）里被访问，
  * 天然单线程，不需要额外加锁。
  */
+
+ //在event_init.c中添加#include "calc_ui.h"
+ //在函数events_init_screen_7()中调用calc_ui_screen_created(ui);
 #include "calc_ui.h"
 
 #include <stdint.h>

@@ -37,7 +37,29 @@ typedef struct
 	lv_obj_t *screen_2_digital_clock_1;
 	lv_obj_t *screen_3;
 	bool screen_3_del;
+	lv_obj_t *screen_3_cont_1;
+	lv_obj_t *screen_3_cont_2;
+	lv_obj_t *screen_3_cont_3;
+	lv_obj_t *screen_3_cont_4;
+	lv_obj_t *screen_3_cont_5;
+	lv_obj_t *screen_3_cont_6;
+	lv_obj_t *screen_3_cont_7;
+	lv_obj_t *screen_3_cont_8;
+	lv_obj_t *screen_3_cont_9;
+	lv_obj_t *screen_3_cont_17;
+	lv_obj_t *screen_3_cont_16;
+	lv_obj_t *screen_3_cont_15;
+	lv_obj_t *screen_3_cont_14;
+	lv_obj_t *screen_3_cont_13;
+	lv_obj_t *screen_3_cont_12;
+	lv_obj_t *screen_3_cont_11;
+	lv_obj_t *screen_3_cont_10;
+	lv_obj_t *screen_3_label_2;
+	lv_obj_t *screen_3_label_1;
+	lv_obj_t *screen_3_label_3;
 	lv_obj_t *screen_3_img_1;
+	lv_obj_t *screen_3_cont_18;
+	lv_obj_t *screen_3_label_4;
 	lv_obj_t *screen_4;
 	bool screen_4_del;
 	lv_obj_t *screen_4_img_1;
@@ -152,13 +174,15 @@ LV_IMG_DECLARE(screen_2_animimg_152);
 LV_IMG_DECLARE(screen_2_animimg_154);
 LV_IMG_DECLARE(screen_2_animimg_156);
 LV_IMG_DECLARE(screen_2_animimg_158);
-LV_IMG_DECLARE(_gaming_alpha_100x100);
+LV_IMG_DECLARE(_back_alpha_45x40);
 LV_IMG_DECLARE(_calendar1_alpha_100x100);
 LV_IMG_DECLARE(_music1_alpha_100x100);
 LV_IMG_DECLARE(_clock_alpha_100x100);
 LV_IMG_DECLARE(_delate_alpha_41x25);
 
 LV_FONT_DECLARE(lv_font_Alatsi_Regular_40)
+LV_FONT_DECLARE(lv_font_Acme_Regular_40)
+LV_FONT_DECLARE(lv_font_Acme_Regular_25)
 LV_FONT_DECLARE(lv_font_Acme_Regular_30)
 LV_FONT_DECLARE(lv_font_Acme_Regular_50)
 LV_FONT_DECLARE(lv_font_Acme_Regular_35)

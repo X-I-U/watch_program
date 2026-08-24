@@ -5,6 +5,7 @@ set(src_dirs
             MYNTC
             WIFISTA
             calculator
+            game2048
             espressif__esp_lcd_tk018
             ui
             ui/generated
@@ -21,6 +22,7 @@ set(include_dirs
             MYNTC
             WIFISTA
             calculator
+            game2048
             espressif__esp_lcd_tk018/include
             ui
             ui/generated

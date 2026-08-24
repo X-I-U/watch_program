@@ -537,7 +537,7 @@ void setup_scr_screen_7(lv_ui *ui)
     ui->screen_7_label_7 = lv_label_create(ui->screen_7_cont_17);
     lv_label_set_text(ui->screen_7_label_7, "9");
     lv_label_set_long_mode(ui->screen_7_label_7, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(ui->screen_7_label_7, 6, 4);
+    lv_obj_set_pos(ui->screen_7_label_7, 6, 3);
     lv_obj_set_size(ui->screen_7_label_7, 35, 29);
 
     //Write style for screen_7_label_7, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
