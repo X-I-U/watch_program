@@ -1,0 +1,1 @@
+GEN_CSRCS += lv_font_Alatsi_Regular_40.c lv_font_Acme_Regular_40.c lv_font_Acme_Regular_25.c lv_font_montserratMedium_12.c lv_font_Acme_Regular_16.c lv_font_Alatsi_Regular_18.c lv_font_SourceHanSansSC_Regular_16.c lv_font_SourceHanSansSC_Regular_20.c lv_font_Acme_Regular_30.c lv_font_Acme_Regular_50.c lv_font_Acme_Regular_35.c

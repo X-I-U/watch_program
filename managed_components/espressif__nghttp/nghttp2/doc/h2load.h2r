@@ -1,0 +1,109 @@
+.. _h2load-1-output:
+
+OUTPUT
+------
+
+REQUEST METRICS
+~~~~~~~~~~~~~~~
+
+requests
+  total
+    The total number of requests h2load was instructed to make.
+  started
+    The number of requests initiated by the tool.
+  done
+    The number of requests that reached completion.
+  succeeded
+    Requests resulting in an HTTP 2xx or 3xx status code.
+  failed
+    The total number of failed requests.  This includes both
+    ``errored`` requests and requests that completed with a
+    non-2xx/3xx status code.
+  errored
+    A subset of ``failed`` where the requests failed due to
+    network-level issues (e.g., TCP resets, ``RST_STREAM``) rather
+    than HTTP status codes.
+  timeout
+    A subset of ``errored`` where the connection timed out before
+    completion.
+
+status codes
+  The specific count of received HTTP status codes categorized by
+  class (2xx, 3xx, 4xx, 5xx).
+
+TRAFFIC METRICS
+~~~~~~~~~~~~~~~
+
+traffic
+  total
+    Total application data bytes received "on the wire" (decrypted if
+    using TLS).
+  headers
+    Total bytes used for response headers (pre-decompression).
+
+    space savings
+      Header compression efficiency, calculated as:
+
+      (1 - headers / decompressed_headers) * 100
+
+      where ``headers`` is the compressed size and
+      ``decompressed_headers`` is the size after decompression.
+  data
+    Total bytes received in response bodies.
+
+PERFORMANCE STATISTICS
+~~~~~~~~~~~~~~~~~~~~~~
+
+Metric Definitions
+  request
+    The duration from sending the first byte of a request to receiving
+    the last byte of the response.
+  connect
+    The time taken to establish a connection, including TLS
+    handshakes.
+  TTFB
+    The duration until the first byte of application data is received
+    from the server (decrypted if using TLS).
+  req/s
+    The requests per second measured individually across all clients.
+  min RTT
+    The minimum RTT (QUIC).
+  smoothed RTT
+    The smoothed RTT (QUIC).
+  packets sent
+    The number of packets sent (QUIC).
+  packets recv
+    The number of packets received (QUIC).
+  packets lost
+    The number of packets declared lost (QUIC).
+  GRO packets
+    The number of packets received in a single recvmsg call (QUIC).
+
+Distribution Fields
+  min / max
+    The absolute minimum and maximum values recorded.
+  median
+    The 50th percentile value.
+  p95 / p99
+    The 95th and 99th percentiles, indicating tail performance.
+  mean
+    The arithmetic average of all samples.
+  sd
+    The standard deviation (measure of data dispersion).
+  +/- sd
+    The percentage of successful samples falling within one standard
+    deviation of the mean (mean +/- sd).
+
+FLOW CONTROL
+------------
+
+h2load sets large flow control window by default, and effectively
+disables flow control to avoid under utilization of server
+performance.  To set smaller flow control window, use :option:`-w` and
+:option:`-W` options.  For example, use ``-w16 -W16`` to set default
+window size described in HTTP/2 protocol specification.
+
+SEE ALSO
+--------
+
+:manpage:`nghttp(1)`, :manpage:`nghttpd(1)`, :manpage:`nghttpx(1)`

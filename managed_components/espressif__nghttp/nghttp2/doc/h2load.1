@@ -1,0 +1,544 @@
+.\" Man page generated from reStructuredText
+.\" by the Docutils 0.22.4 manpage writer.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "H2LOAD" "1" "Apr 19, 2026" "1.69.0" "nghttp2"
+.SH NAME
+h2load \- HTTP/2 benchmarking tool
+.SH SYNOPSIS
+.sp
+\fBh2load\fP [OPTIONS]... [URI]...
+.SH DESCRIPTION
+.sp
+benchmarking tool for HTTP/2 server
+.INDENT 0.0
+.TP
+.B <URI>
+Specify URI to access.   Multiple URIs can be specified.
+URIs are used  in this order for each  client.  All URIs
+are used, then  first URI is used and then  2nd URI, and
+so  on.  The  scheme, host  and port  in the  subsequent
+URIs, if present,  are ignored.  Those in  the first URI
+are used solely.  Definition of a base URI overrides all
+scheme, host or port values.
+.UNINDENT
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \-n, \-\-requests=<N>
+Number of  requests across all  clients.  If it  is used
+with \fB\-\-timing\-script\-file\fP option,  this option specifies
+the number of requests  each client performs rather than
+the number of requests  across all clients.  This option
+is ignored if timing\-based  benchmarking is enabled (see
+\fB\-\-duration\fP option).
+.sp
+Default: \fB1\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-c, \-\-clients=<N>
+Number  of concurrent  clients.   With  \fB\-r\fP option,  this
+specifies the maximum number of connections to be made.
+.sp
+Default: \fB1\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-t, \-\-threads=<N>
+Number of native threads.
+.sp
+Default: \fB1\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-i, \-\-input\-file=<PATH>
+Path of a file with multiple URIs are separated by EOLs.
+This option will disable URIs getting from command\-line.
+If \(aq\-\(aq is given as <PATH>, URIs will be read from stdin.
+URIs are used  in this order for each  client.  All URIs
+are used, then  first URI is used and then  2nd URI, and
+so  on.  The  scheme, host  and port  in the  subsequent
+URIs, if present,  are ignored.  Those in  the first URI
+are used solely.  Definition of a base URI overrides all
+scheme, host or port values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-m, \-\-max\-concurrent\-streams=<N>
+Max  concurrent  streams  to issue  per  session.   When
+http/1.1  is used,  this  specifies the  number of  HTTP
+pipelining requests in\-flight.
+.sp
+Default: \fB1\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-f, \-\-max\-frame\-size=<SIZE>
+Maximum frame size that the local endpoint is willing to
+receive.
+.sp
+Default: \fB16K\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-w, \-\-window\-bits=<N>
+Sets the stream level initial window size to (2**<N>)\-1.
+For  QUIC, <N>  is  capped to  26  (roughly 64MiB).   It
+defaults  to  24 (16MiB)  for  QUIC,  and 30  for  other
+protocols.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-W, \-\-connection\-window\-bits=<N>
+Sets  the  connection  level   initial  window  size  to
+(2**<N>)\-1.
+.sp
+Default: \fB30\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-H, \-\-header=<HEADER>
+Add/Override a header to the requests.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-ciphers=<SUITE>
+Set  allowed cipher  list  for TLSv1.2  or earlier.   The
+format of the string is described in OpenSSL ciphers(1).
+.sp
+Default: \fBECDHE\-ECDSA\-AES128\-GCM\-SHA256:ECDHE\-RSA\-AES128\-GCM\-SHA256:ECDHE\-ECDSA\-AES256\-GCM\-SHA384:ECDHE\-RSA\-AES256\-GCM\-SHA384:ECDHE\-ECDSA\-CHACHA20\-POLY1305:ECDHE\-RSA\-CHACHA20\-POLY1305:DHE\-RSA\-AES128\-GCM\-SHA256:DHE\-RSA\-AES256\-GCM\-SHA384\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-tls13\-ciphers=<SUITE>
+Set allowed cipher list for  TLSv1.3.  The format of the
+string is described in OpenSSL ciphers(1).
+.sp
+Default: \fBTLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_CCM_SHA256\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-p, \-\-no\-tls\-proto=<PROTOID>
+Specify ALPN identifier of the  protocol to be used when
+accessing http URI without SSL/TLS.
+Available protocols: h2c and http/1.1
+.sp
+Default: \fBh2c\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-d, \-\-data=<PATH>
+Post FILE to  server.  The request method  is changed to
+POST.   For  http/1.1 connection,  if  \fB\-d\fP  is used,  the
+maximum number of in\-flight pipelined requests is set to
+1.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-r, \-\-rate=<N>
+Specifies  the  fixed  rate  at  which  connections  are
+created.   The   rate  must   be  a   positive  integer,
+representing the  number of  connections to be  made per
+rate period.   The maximum  number of connections  to be
+made  is  given  in  \fB\-c\fP   option.   This  rate  will  be
+distributed among  threads as  evenly as  possible.  For
+example,  with   \fB\-t\fP2  and   \fB\-r\fP4,  each  thread   gets  2
+connections per period.  When the rate is 0, the program
+will run  as it  normally does, creating  connections at
+whatever variable rate it  wants.  The default value for
+this option is 0.  \fB\-r\fP and \fB\-D\fP are mutually exclusive.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-rate\-period=<DURATION>
+Specifies the time  period between creating connections.
+The period  must be a positive  number, representing the
+length of the period in time.  This option is ignored if
+the rate option is not used.  The default value for this
+option is 1s.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-D, \-\-duration=<DURATION>
+Specifies the main duration for the measurements in case
+of timing\-based  benchmarking.  \fB\-D\fP  and \fB\-r\fP  are mutually
+exclusive.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-warm\-up\-time=<DURATION>
+Specifies the  time  period  before  starting the actual
+measurements, in  case  of  timing\-based benchmarking.
+Needs to provided along with \fB\-D\fP option.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-T, \-\-connection\-active\-timeout=<DURATION>
+Specifies  the maximum  time that  h2load is  willing to
+keep a  connection open,  regardless of the  activity on
+said connection.  <DURATION> must be a positive integer,
+specifying the amount of time  to wait.  When no timeout
+value is  set (either  active or inactive),  h2load will
+keep  a  connection  open indefinitely,  waiting  for  a
+response.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-N, \-\-connection\-inactivity\-timeout=<DURATION>
+Specifies the amount  of time that h2load  is willing to
+wait to see activity  on a given connection.  <DURATION>
+must  be a  positive integer,  specifying the  amount of
+time  to wait.   When no  timeout value  is set  (either
+active or inactive), h2load  will keep a connection open
+indefinitely, waiting for a response.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-timing\-script\-file=<PATH>
+Path of a file containing one or more lines separated by
+EOLs.  Each script line is composed of two tab\-separated
+fields.  The first field represents the time offset from
+the start of execution, expressed as a positive value of
+milliseconds  with microsecond  resolution.  The  second
+field represents the URI.  This option will disable URIs
+getting from  command\-line.  If \(aq\-\(aq is  given as <PATH>,
+script lines will be read  from stdin.  Script lines are
+used in order for each client.   If \fB\-n\fP is given, it must
+be less  than or  equal to the  number of  script lines,
+larger values are clamped to the number of script lines.
+If \fB\-n\fP is not given,  the number of requests will default
+to the  number of  script lines.   The scheme,  host and
+port defined in  the first URI are  used solely.  Values
+contained  in  other  URIs,  if  present,  are  ignored.
+Definition of a  base URI overrides all  scheme, host or
+port   values.   \fB\-\-timing\-script\-file\fP   and  \fB\-\-rps\fP   are
+mutually exclusive.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-B, \-\-base\-uri=(<URI>|unix:<PATH>)
+Specify URI from which the scheme, host and port will be
+used  for  all requests.   The  base  URI overrides  all
+values  defined either  at  the command  line or  inside
+input files.  If argument  starts with \(dqunix:\(dq, then the
+rest  of the  argument will  be treated  as UNIX  domain
+socket path.   The connection is made  through that path
+instead of TCP.   In this case, scheme  is inferred from
+the first  URI appeared  in the  command line  or inside
+input files as usual.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-alpn\-list=<LIST>
+Comma delimited list of  ALPN protocol identifier sorted
+in the  order of preference.  That  means most desirable
+protocol comes  first.  The parameter must  be delimited
+by a single comma only  and any white spaces are treated
+as a part of protocol string.
+.sp
+Default: \fBh2,http/1.1\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-h1
+Short        hand        for        \fB\-\-alpn\-list\fP=http/1.1
+\fB\-\-no\-tls\-proto\fP=http/1.1,    which   effectively    force
+http/1.1 for both http and https URI.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-h3
+Short hand for  \fB\-\-alpn\-list\fP=h3, which effectively forces
+HTTP/3.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-header\-table\-size=<SIZE>
+Specify decoder header table size.
+.sp
+Default: \fB4K\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-encoder\-header\-table\-size=<SIZE>
+Specify encoder header table size.  The decoder (server)
+specifies  the maximum  dynamic table  size it  accepts.
+Then the negotiated dynamic table size is the minimum of
+this option value and the value which server specified.
+.sp
+Default: \fB4K\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-log\-file=<PATH>
+Write per\-request information to a file as tab\-separated
+columns: start  time as  microseconds since  epoch; HTTP
+status code;  microseconds until end of  response.  More
+columns may be added later.  Rows are ordered by end\-of\-
+response  time when  using  one worker  thread, but  may
+appear slightly  out of order with  multiple threads due
+to buffering.  Status code is \-1 for failed streams.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-qlog\-file\-base=<PATH>
+Enable qlog output and specify base file name for qlogs.
+Qlog is emitted  for each connection.  For  a given base
+name   \(dqbase\(dq,    each   output   file    name   becomes
+\(dqbase.M.N.sqlog\(dq where M is worker ID and N is client ID
+(e.g. \(dqbase.0.3.sqlog\(dq).  Only effective in QUIC runs.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-connect\-to=<HOST>[:<PORT>]
+Host and port to connect  instead of using the authority
+in <URI>.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-rps=<N>
+Specify request  per second for each  client.  \fB\-\-rps\fP and
+\fB\-\-timing\-script\-file\fP are mutually exclusive.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-groups=<GROUPS>
+Specify the supported groups.
+.sp
+Default: \fBX25519:P\-256:P\-384:P\-521\fP
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-no\-udp\-gso
+Disable UDP GSO.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-max\-udp\-payload\-size=<SIZE>
+Specify the maximum outgoing UDP datagram payload size.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-ktls
+Enable ktls.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-sni=<DNSNAME>
+Send  <DNSNAME> in  TLS  SNI, overriding  the host  name
+specified in URI.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-histogram
+Plot histogram for performance statistics.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-tls\-session\-file=<PATH>
+Read  TLS session  from <PATH>,  and set  it to  all TLS
+connections to  perform the  session resumption.   It is
+also used  to store  the new TLS  session.  At  most one
+session is written to the given file.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-output\-file=<PATH>
+Write the measurement results  to <PATH> in JSON format.
+This  basically includes  all  numbers  reported to  the
+normal   output.     In   addition,    for   performance
+measurements, all raw samples are included.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-v, \-\-verbose
+Output debug information.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-version
+Display version information and exit.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-h, \-\-help
+Display this help and exit.
+.UNINDENT
+.sp
+The <SIZE> argument is an integer and an optional unit (e.g., 10K is
+10 * 1024).  Units are K, M and G (powers of 1024).
+.sp
+The <DURATION> argument is an integer and an optional unit (e.g., 1s
+is 1 second and 500ms is 500 milliseconds).  Units are h, m, s or ms
+(hours, minutes, seconds and milliseconds, respectively).  If a unit
+is omitted, a second is used as unit.
+.SH OUTPUT
+.SS REQUEST METRICS
+.INDENT 0.0
+.TP
+.B requests
+.INDENT 7.0
+.TP
+.B total
+The total number of requests h2load was instructed to make.
+.TP
+.B started
+The number of requests initiated by the tool.
+.TP
+.B done
+The number of requests that reached completion.
+.TP
+.B succeeded
+Requests resulting in an HTTP 2xx or 3xx status code.
+.TP
+.B failed
+The total number of failed requests.  This includes both
+\fBerrored\fP requests and requests that completed with a
+non\-2xx/3xx status code.
+.TP
+.B errored
+A subset of \fBfailed\fP where the requests failed due to
+network\-level issues (e.g., TCP resets, \fBRST_STREAM\fP) rather
+than HTTP status codes.
+.TP
+.B timeout
+A subset of \fBerrored\fP where the connection timed out before
+completion.
+.UNINDENT
+.TP
+.B status codes
+The specific count of received HTTP status codes categorized by
+class (2xx, 3xx, 4xx, 5xx).
+.UNINDENT
+.SS TRAFFIC METRICS
+.INDENT 0.0
+.TP
+.B traffic
+.INDENT 7.0
+.TP
+.B total
+Total application data bytes received \(dqon the wire\(dq (decrypted if
+using TLS).
+.TP
+.B headers
+Total bytes used for response headers (pre\-decompression).
+.INDENT 7.0
+.TP
+.B space savings
+Header compression efficiency, calculated as:
+.sp
+(1 \- headers / decompressed_headers) * 100
+.sp
+where \fBheaders\fP is the compressed size and
+\fBdecompressed_headers\fP is the size after decompression.
+.UNINDENT
+.TP
+.B data
+Total bytes received in response bodies.
+.UNINDENT
+.UNINDENT
+.SS PERFORMANCE STATISTICS
+.INDENT 0.0
+.TP
+.B Metric Definitions
+.INDENT 7.0
+.TP
+.B request
+The duration from sending the first byte of a request to receiving
+the last byte of the response.
+.TP
+.B connect
+The time taken to establish a connection, including TLS
+handshakes.
+.TP
+.B TTFB
+The duration until the first byte of application data is received
+from the server (decrypted if using TLS).
+.TP
+.B req/s
+The requests per second measured individually across all clients.
+.TP
+.B min RTT
+The minimum RTT (QUIC).
+.TP
+.B smoothed RTT
+The smoothed RTT (QUIC).
+.TP
+.B packets sent
+The number of packets sent (QUIC).
+.TP
+.B packets recv
+The number of packets received (QUIC).
+.TP
+.B packets lost
+The number of packets declared lost (QUIC).
+.TP
+.B GRO packets
+The number of packets received in a single recvmsg call (QUIC).
+.UNINDENT
+.TP
+.B Distribution Fields
+.INDENT 7.0
+.TP
+.B min / max
+The absolute minimum and maximum values recorded.
+.TP
+.B median
+The 50th percentile value.
+.TP
+.B p95 / p99
+The 95th and 99th percentiles, indicating tail performance.
+.TP
+.B mean
+The arithmetic average of all samples.
+.TP
+.B sd
+The standard deviation (measure of data dispersion).
+.TP
+.B +/\- sd
+The percentage of successful samples falling within one standard
+deviation of the mean (mean +/\- sd).
+.UNINDENT
+.UNINDENT
+.SH FLOW CONTROL
+.sp
+h2load sets large flow control window by default, and effectively
+disables flow control to avoid under utilization of server
+performance.  To set smaller flow control window, use \fB\-w\fP and
+\fB\-W\fP options.  For example, use \fB\-w16 \-W16\fP to set default
+window size described in HTTP/2 protocol specification.
+.SH SEE ALSO
+.sp
+\fBnghttp(1)\fP, \fBnghttpd(1)\fP, \fBnghttpx(1)\fP
+.SH Author
+Tatsuhiro Tsujikawa
+.SH Copyright
+2012, 2015, 2016, Tatsuhiro Tsujikawa
+.\" End of generated man page.

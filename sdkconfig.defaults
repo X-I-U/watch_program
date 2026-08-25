@@ -4,3 +4,5 @@ CONFIG_LV_COLOR_16_SWAP=y
 # WiFi/NTP firmware ~1.6MB; use custom partition table with 4M factory app
 CONFIG_PARTITION_TABLE_CUSTOM=y
 CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+# ADF 2.x components use legacy FreeRTOS names (xSemaphoreHandle etc.); must be enabled
+CONFIG_FREERTOS_ENABLE_BACKWARD_COMPATIBILITY=y

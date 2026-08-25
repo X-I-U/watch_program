@@ -13,6 +13,9 @@
 #include "myntc.h"
 #include "esp_sntp.h"
 #include <time.h>
+#include "speaker.h"
+#include "axp2101.h"
+#include "mp3_player.h"
 
 static SemaphoreHandle_t lvgl_mux = NULL;
 
@@ -119,6 +122,23 @@ static void example_lvgl_port_task(void *arg)
 
 void app_main(void)
 {
+    axp2101_i2c_init();
+    axp2101_set_aldo1_voltage(3.3);
+    axp2101_enable_aldo1(true);
+
+    esp_err_t nvs_ret = nvs_flash_init();
+    if (nvs_ret == ESP_ERR_NVS_NO_FREE_PAGES || nvs_ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        nvs_ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK(nvs_ret);
+    // ① 阻塞等 WiFi（wifista_init 非阻塞，要额外等）
+    wifista_init();
+    wifi_wait_connected(10000);   // 你之前加的阻塞等待函数
+    // ② 初始化解码器 + 喇叭（只一次）
+    mp3_player_init();
+    mp3_player_play("http://music.163.com/song/media/outer/url?id=2652820720.mp3");
+
      lcd_display_init();
      lcd_touch_init();
      lvgl_timer_init(lvgl_init());
@@ -136,14 +156,8 @@ void app_main(void)
     }
 
     /* ---- NTP 实时时间：连 WiFi -> 同步 SNTP -> 把真实时间写到 LVGL 时钟 ---- */
-    esp_err_t nvs_ret = nvs_flash_init();
-    if (nvs_ret == ESP_ERR_NVS_NO_FREE_PAGES || nvs_ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        nvs_ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(nvs_ret);
 
-    wifista_init();             /* 连接 WiFi（SSID/密码在 wifista.h 里配置，断开会自动重连） */
+    //wifista_init();             /* 连接 WiFi（SSID/密码在 wifista.h 里配置，断开会自动重连） */
     myntc_init();               /* 初始化 SNTP + 时区 CST-8 */
 
     /* 后台任务：等 NTP 同步后把真实时间同步到 LVGL 时钟，并定期校准 */
