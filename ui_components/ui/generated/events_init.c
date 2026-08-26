@@ -12,6 +12,7 @@
 #include "lvgl.h"
 #include "calc_ui.h"
 #include "game2048_ui.h"
+#include "music_ui.h"
 
 #if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
 #include "freemaster_client.h"
@@ -171,7 +172,8 @@ static void screen_6_event_handler (lv_event_t *e)
         case LV_DIR_RIGHT:
         {
             lv_indev_wait_release(lv_indev_get_act());
-            ui_load_scr_animation(&guider_ui, &guider_ui.screen_2, guider_ui.screen_2_del, &guider_ui.screen_6_del, setup_scr_screen_2, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 200, true, true);
+            /* [LOCAL PATCH] 返回主界面：去掉 200ms 动画延迟，避免停留背景色过久 */
+            ui_load_scr_animation(&guider_ui, &guider_ui.screen_2, guider_ui.screen_2_del, &guider_ui.screen_6_del, setup_scr_screen_2, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 0, true, true);
             break;
         }
         default:
@@ -324,6 +326,7 @@ void events_init_screen_6 (lv_ui *ui)
     lv_obj_add_event_cb(ui->screen_6_cont_4, screen_6_cont_4_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_6_cont_5, screen_6_cont_5_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_6_cont_6, screen_6_cont_6_event_handler, LV_EVENT_ALL, ui);
+    music_ui_screen_created(ui);   /* 音乐业务接入点 */
 }
 
 static void screen_7_event_handler (lv_event_t *e)

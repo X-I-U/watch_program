@@ -15,7 +15,7 @@
 #include <time.h>
 #include "speaker.h"
 #include "axp2101.h"
-#include "mp3_player.h"
+#include "music_core.h"
 
 static SemaphoreHandle_t lvgl_mux = NULL;
 
@@ -84,16 +84,19 @@ static void sync_lvgl_clock_from_rtc(void)
     if (h12 == 0) h12 = 12;
 
     if (example_lvgl_lock(-1)) {
-        screen_2_digital_clock_1_hour_value = h12;
-        screen_2_digital_clock_1_min_value  = t.tm_min;
-        screen_2_digital_clock_1_sec_value  = t.tm_sec;
-        strcpy(screen_2_digital_clock_1_meridiem, (t.tm_hour < 12) ? "AM" : "PM");
-        lv_dclock_set_text_fmt(guider_ui.screen_2_digital_clock_1,
-                               "%d:%02d:%02d %s",
-                               screen_2_digital_clock_1_hour_value,
-                               screen_2_digital_clock_1_min_value,
-                               screen_2_digital_clock_1_sec_value,
-                               screen_2_digital_clock_1_meridiem);
+        /* 时钟控件可能已被销毁（切到其它 screen 时 screen_2 被 auto_del），先判有效避免崩溃 */
+        if (lv_obj_is_valid(guider_ui.screen_2_digital_clock_1)) {
+            screen_2_digital_clock_1_hour_value = h12;
+            screen_2_digital_clock_1_min_value  = t.tm_min;
+            screen_2_digital_clock_1_sec_value  = t.tm_sec;
+            strcpy(screen_2_digital_clock_1_meridiem, (t.tm_hour < 12) ? "AM" : "PM");
+            lv_dclock_set_text_fmt(guider_ui.screen_2_digital_clock_1,
+                                   "%d:%02d:%02d %s",
+                                   screen_2_digital_clock_1_hour_value,
+                                   screen_2_digital_clock_1_min_value,
+                                   screen_2_digital_clock_1_sec_value,
+                                   screen_2_digital_clock_1_meridiem);
+        }
         example_lvgl_unlock();
     }
 }
@@ -135,9 +138,8 @@ void app_main(void)
     // ① 阻塞等 WiFi（wifista_init 非阻塞，要额外等）
     wifista_init();
     wifi_wait_connected(10000);   // 你之前加的阻塞等待函数
-    // ② 初始化解码器 + 喇叭（只一次）
-    mp3_player_init();
-    mp3_player_play("http://music.163.com/song/media/outer/url?id=2652820720.mp3");
+    // ② 音乐业务初始化（建持久管线 + 歌单），进入音乐页后由 UI 操作播放
+    music_core_init();
 
      lcd_display_init();
      lcd_touch_init();
@@ -161,5 +163,5 @@ void app_main(void)
     myntc_init();               /* 初始化 SNTP + 时区 CST-8 */
 
     /* 后台任务：等 NTP 同步后把真实时间同步到 LVGL 时钟，并定期校准 */
-    xTaskCreate(clock_sync_task, "clock_sync", 4096, NULL, 5, NULL);
+    //xTaskCreate(clock_sync_task, "clock_sync", 4096, NULL, 5, NULL);
 }

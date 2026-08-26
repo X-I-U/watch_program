@@ -1,6 +1,7 @@
 set(src_dirs
             calculator
             game2048
+            music
             ui
             ui/generated
             ui/generated/guider_fonts
@@ -12,6 +13,7 @@ set(src_dirs
 set(include_dirs
             calculator
             game2048
+            music
             ui
             ui/generated
             ui/generated/guider_fonts
@@ -21,7 +23,8 @@ set(include_dirs
             ui/dclock)
 
 set(requires
-            lvgl__lvgl)
+            lvgl__lvgl
+            basic_components)
 
 idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRES ${requires})
 
