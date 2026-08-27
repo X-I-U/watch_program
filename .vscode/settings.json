@@ -1,16 +1,23 @@
 {
   "C_Cpp.intelliSenseEngine": "default",
   "cmake.configureOnOpen": false,
-  "idf.espIdfPathWin": "d:\\Espressif\\frameworks\\esp-idf-v5.1.2",
-  "idf.pythonInstallPath": "d:\\Espressif\\tools\\tools\\idf-python\\3.11.2\\python.exe",
+  "idf.espIdfPathWin": "D:\\Espressifv5.5\\.espressif\\v5.5.5\\esp-idf",
+  "idf.pythonInstallPath": "C:\\Espressif\\tools\\python\\v5.5.5\\venv\\Scripts\\python.exe",
+  "idf.customExtraPaths": [
+    "C:\\Espressif\\tools\\cmake\\3.30.2\\bin",
+    "C:\\Espressif\\tools\\ninja\\1.12.1",
+    "C:\\Espressif\\tools\\xtensa-esp-elf\\esp-14.2.0_20260121\\xtensa-esp-elf\\bin",
+    "C:\\Espressif\\tools\\python\\v5.5.5\\venv\\Scripts"
+  ],
   "idf.openOcdConfigs": [
     "interface/ftdi/esp32_devkitj_v1.cfg",
     "target/esp32s3.cfg"
   ],
   "idf.portWin": "COM9",
-  "idf.toolsPathWin": "d:\\Espressif\\tools",
+  "idf.toolsPathWin": "C:\\Espressif\\tools",
   "idf.customExtraVars": {
-    "IDF_TARGET": "esp32s3"
+    "IDF_TARGET": "esp32s3",
+    "PYTHON": "C:\\Espressif\\tools\\python\\v5.5.5\\venv\\Scripts\\python.exe"
   },
   "idf.flashType": "UART"
 }

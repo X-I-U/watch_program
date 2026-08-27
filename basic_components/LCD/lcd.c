@@ -152,7 +152,10 @@ void lcd_touch_init()
 
     // 触屏驱动IO句柄
     esp_lcd_panel_io_handle_t tp_io_handle = NULL;
-    const esp_lcd_panel_io_i2c_config_t tp_io_config = ESP_LCD_TOUCH_IO_I2C_CST816S_CONFIG();
+    esp_lcd_panel_io_i2c_config_t tp_io_config = ESP_LCD_TOUCH_IO_I2C_CST816S_CONFIG();
+    // 触摸与 AXP2101/RTC 共用 I2C_NUM_1 这条 legacy 总线，时钟已在 axp2101_i2c_init() 设为 400kHz。
+    // IDF>=5.2 的宏会塞进 scl_speed_hz=100000，但 legacy 总线要求该字段必须为 0，否则返回 ESP_ERR_INVALID_ARG。
+    tp_io_config.scl_speed_hz = 0;
 
     const esp_lcd_touch_config_t tp_cfg = {
         .x_max = EXAMPLE_LCD_H_RES,
