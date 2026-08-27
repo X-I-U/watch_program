@@ -108,17 +108,62 @@ const lv_img_dsc_t * screen_2_animimg_1_imgs[29] = {
     &screen_2_animimg_156,
     &screen_2_animimg_158,
 };
-extern int screen_2_digital_clock_1_hour_value;
-extern int screen_2_digital_clock_1_min_value;
-extern int screen_2_digital_clock_1_sec_value;
-extern char screen_2_digital_clock_1_meridiem[];
+static lv_obj_t * screen_2_datetext_1_calendar;
 
-void screen_2_digital_clock_1_timer(lv_timer_t *timer)
+void screen_2_datetext_1_event_handler(lv_event_t *e)
 {
-    clock_count_12(&screen_2_digital_clock_1_hour_value, &screen_2_digital_clock_1_min_value, &screen_2_digital_clock_1_sec_value, screen_2_digital_clock_1_meridiem);
-    if (lv_obj_is_valid(guider_ui.screen_2_digital_clock_1))
-    {
-        lv_dclock_set_text_fmt(guider_ui.screen_2_digital_clock_1, "%d:%02d:%02d %s", screen_2_digital_clock_1_hour_value, screen_2_digital_clock_1_min_value, screen_2_digital_clock_1_sec_value, screen_2_digital_clock_1_meridiem);
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * btn = lv_event_get_target(e);
+    if(code == LV_EVENT_FOCUSED) {
+        char * s = lv_label_get_text(btn);
+        if(screen_2_datetext_1_calendar == NULL) {
+            screen_2_datetext_1_init_calendar(btn, s);
+        }
     }
 }
+
+void screen_2_datetext_1_init_calendar(lv_obj_t *obj, char * s)
+{
+    if (screen_2_datetext_1_calendar == NULL) {
+        lv_obj_add_flag(lv_layer_top(), LV_OBJ_FLAG_CLICKABLE);
+        screen_2_datetext_1_calendar = lv_calendar_create(lv_layer_top());
+        lv_obj_t * scr = lv_obj_get_screen(obj);
+        lv_coord_t scr_height = lv_obj_get_height(scr);
+        lv_coord_t scr_width = lv_obj_get_width(scr);
+        lv_obj_set_size(screen_2_datetext_1_calendar, scr_width * 0.8, scr_height * 0.8);
+        char * year = strtok(s, "/");
+        char * month = strtok(NULL, "/");
+        char * day = strtok(NULL, "/");
+        lv_calendar_set_showed_date(screen_2_datetext_1_calendar, atoi(year), atoi(month));
+        lv_calendar_date_t highlighted_days[1];       /*Only its pointer will be saved so should be static*/
+        highlighted_days[0].year = atoi(year);
+        highlighted_days[0].month = atoi(month);
+        highlighted_days[0].day = atoi(day);
+        lv_calendar_set_highlighted_dates(screen_2_datetext_1_calendar, highlighted_days, 1);
+        lv_obj_align(screen_2_datetext_1_calendar,LV_ALIGN_CENTER, 0, 0);
+
+        lv_obj_add_event_cb(screen_2_datetext_1_calendar, screen_2_datetext_1_calendar_event_handler, LV_EVENT_ALL,NULL);
+        lv_calendar_header_arrow_create(screen_2_datetext_1_calendar);
+        lv_obj_update_layout(scr);
+    }
+}
+
+void screen_2_datetext_1_calendar_event_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_current_target(e);
+
+    if (code == LV_EVENT_VALUE_CHANGED) {
+        lv_calendar_date_t date;
+        lv_calendar_get_pressed_date(obj,&date);
+        char buf[16];
+        lv_snprintf(buf,sizeof(buf),"%d/%02d/%02d", date.year, date.month,date.day);
+        lv_label_set_text(guider_ui.screen_2_datetext_1, buf);
+        lv_obj_clear_flag(lv_layer_top(), LV_OBJ_FLAG_CLICKABLE);
+        lv_obj_set_style_bg_opa(lv_layer_top(), LV_OPA_TRANSP, 0);
+        lv_obj_del(screen_2_datetext_1_calendar);
+        screen_2_datetext_1_calendar = NULL;
+    }
+}
+
 

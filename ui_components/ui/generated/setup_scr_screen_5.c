@@ -38,8 +38,8 @@ void setup_scr_screen_5(lv_ui *ui)
     lv_obj_set_style_bg_opa(ui->screen_5_tabview_1, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->screen_5_tabview_1, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->screen_5_tabview_1, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(ui->screen_5_tabview_1, lv_color_hex(0x4d4d4d), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_5_tabview_1, &lv_font_montserratMedium_12, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->screen_5_tabview_1, lv_color_hex(0xd732ae), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_5_tabview_1, &lv_font_SourceHanSansSC_Regular_12, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->screen_5_tabview_1, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->screen_5_tabview_1, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->screen_5_tabview_1, 16, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -85,8 +85,8 @@ void setup_scr_screen_5(lv_ui *ui)
     lv_style_set_bg_opa(&style_screen_5_tabview_1_extra_btnm_items_checked, 0);
     lv_obj_add_style(lv_tabview_get_tab_btns(ui->screen_5_tabview_1), &style_screen_5_tabview_1_extra_btnm_items_checked, LV_PART_ITEMS|LV_STATE_CHECKED);
 
-    //Write codes tab
-    ui->screen_5_tabview_1_tab_1 = lv_tabview_add_tab(ui->screen_5_tabview_1,"tab");
+    //Write codes 倒计时
+    ui->screen_5_tabview_1_tab_1 = lv_tabview_add_tab(ui->screen_5_tabview_1,"倒计时");
     lv_obj_t * screen_5_tabview_1_tab_1_label = lv_label_create(ui->screen_5_tabview_1_tab_1);
     lv_label_set_text(screen_5_tabview_1_tab_1_label, "con1");
 

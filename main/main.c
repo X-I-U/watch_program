@@ -7,15 +7,13 @@
 #include "lcd.h"
 #include "ui.h"
 #include "gui_guider.h"
-#include "lv_dclock.h"
 #include "wifista.h"
 #include "nvs_flash.h"
-#include "myntc.h"
-#include "esp_sntp.h"
-#include <time.h>
 #include "speaker.h"
 #include "axp2101.h"
 #include "music_core.h"
+#include "rtc_service.h"   /* 时间服务中间层：NTP→RTC、读 RTC */
+#include "ui_time.h"       /* LVGL 绑定层：时间/日期/星期 三个控件 */
 
 static SemaphoreHandle_t lvgl_mux = NULL;
 
@@ -35,70 +33,32 @@ static void example_lvgl_unlock(void)
 
 static const char *TAG = "main";
 
-/* 数字时钟控件的时间变量（定义在 GUI Guider 生成的 setup_scr_screen_2.c） */
-extern int screen_2_digital_clock_1_hour_value;
-extern int screen_2_digital_clock_1_min_value;
-extern int screen_2_digital_clock_1_sec_value;
-extern char screen_2_digital_clock_1_meridiem[];
-
-static void sync_lvgl_clock_from_rtc(void);   /* 前置声明：clock_sync_task 先于定义调用 */
-
-/* 时间是否已经有效（NTP 同步完成后 time() 才不再是 1970） */
-static bool time_is_valid(void)
+/* 时间显示任务：每 1s 读一次 RTC，刷 screen2 的时间/日期/星期 三个控件。
+   显示只依赖 RTC，不依赖网络；NTP 只在 rtc_sync_task 里一次性写 RTC。 */
+static void rtc_display_task(void *arg)
 {
-    time_t now = time(NULL);
-    struct tm t = {0};
-    localtime_r(&now, &t);
-    return t.tm_year >= (2025 - 1900);
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        pcf8563_time_t t = {0};
+        if (rtc_service_get_time(&t) != ESP_OK) {
+            continue;   /* RTC 暂时读不到（总线忙等），下个周期再试 */
+        }
+        if (example_lvgl_lock(-1)) {
+            ui_time_refresh(&t);
+            example_lvgl_unlock();
+        }
+    }
 }
 
-/* NTP 同步任务：等 WiFi 连上、NTP 同步后把真实时间写到 LVGL 时钟，并定期校准防漂移 */
-static void clock_sync_task(void *arg)
+/* RTC 同步任务：等 NTP 拿到真实时间 → 写入 RTC（一次性）。
+   之后 RTC 由 VRTC 供电持续走时，显示任务直接从 RTC 读，无需频繁 NTP。 */
+static void rtc_sync_task(void *arg)
 {
-    /* 一直等，直到 NTP 同步成功；期间每 5 秒重启一次 SNTP 主动触发查询
-       （SNTP 默认轮询周期很长，不主动触发可能一小时才同步一次） */
-    while (!time_is_valid()) {
-        esp_sntp_restart();
-        vTaskDelay(pdMS_TO_TICKS(5000));
-    }
-
-    sync_lvgl_clock_from_rtc();
-    ESP_LOGI(TAG, "NTP time synced, LVGL clock updated");
-
-    /* 之后每 1 分钟校准一次，消除 LVGL 定时器累积的秒级漂移 */
-    while (1) {
-        vTaskDelay(pdMS_TO_TICKS(60 * 1000));
-        sync_lvgl_clock_from_rtc();
+    esp_err_t ret = rtc_service_sync_from_ntp(60000);   /* 最多等 60s */
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "NTP->RTC sync failed (ret=%d), display will use RTC as-is", ret);
     }
     vTaskDelete(NULL);
-}
-
-/* 把系统实时时间同步到 LVGL 数字时钟控件（12 小时制） */
-static void sync_lvgl_clock_from_rtc(void)
-{
-    time_t now = time(NULL);
-    struct tm t = {0};
-    localtime_r(&now, &t);
-
-    int h12 = t.tm_hour % 12;
-    if (h12 == 0) h12 = 12;
-
-    if (example_lvgl_lock(-1)) {
-        /* 时钟控件可能已被销毁（切到其它 screen 时 screen_2 被 auto_del），先判有效避免崩溃 */
-        if (lv_obj_is_valid(guider_ui.screen_2_digital_clock_1)) {
-            screen_2_digital_clock_1_hour_value = h12;
-            screen_2_digital_clock_1_min_value  = t.tm_min;
-            screen_2_digital_clock_1_sec_value  = t.tm_sec;
-            strcpy(screen_2_digital_clock_1_meridiem, (t.tm_hour < 12) ? "AM" : "PM");
-            lv_dclock_set_text_fmt(guider_ui.screen_2_digital_clock_1,
-                                   "%d:%02d:%02d %s",
-                                   screen_2_digital_clock_1_hour_value,
-                                   screen_2_digital_clock_1_min_value,
-                                   screen_2_digital_clock_1_sec_value,
-                                   screen_2_digital_clock_1_meridiem);
-        }
-        example_lvgl_unlock();
-    }
 }
 
 // LVGL任务
@@ -135,10 +95,10 @@ void app_main(void)
         nvs_ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(nvs_ret);
-    // ① 阻塞等 WiFi（wifista_init 非阻塞，要额外等）
+    // ① 开始连 WiFi（wifista_init 非阻塞；不再阻塞等——网络等待挪到 rtc_sync_task 内部，
+    //    避免没网时屏幕空等，显示初始化立刻进行）
     wifista_init();
-    wifi_wait_connected(10000);   // 你之前加的阻塞等待函数
-    // ② 音乐业务初始化（建持久管线 + 歌单），进入音乐页后由 UI 操作播放
+    // ② 音乐业务初始化（建持久管线 + 歌单，不依赖网络），进入音乐页后由 UI 操作播放
     music_core_init();
 
      lcd_display_init();
@@ -157,11 +117,12 @@ void app_main(void)
         example_lvgl_unlock();
     }
 
-    /* ---- NTP 实时时间：连 WiFi -> 同步 SNTP -> 把真实时间写到 LVGL 时钟 ---- */
-
-    //wifista_init();             /* 连接 WiFi（SSID/密码在 wifista.h 里配置，断开会自动重连） */
-    myntc_init();               /* 初始化 SNTP + 时区 CST-8 */
-
-    /* 后台任务：等 NTP 同步后把真实时间同步到 LVGL 时钟，并定期校准 */
-    //xTaskCreate(clock_sync_task, "clock_sync", 4096, NULL, 5, NULL);
+    /* ---- RTC 时间：NTP 一次写入 RTC，之后显示从 RTC 读 ---- */
+    esp_err_t rtc_ret = rtc_service_init();   /* 探测 RTC + SNTP */
+    if (rtc_ret != ESP_OK) {
+        ESP_LOGE(TAG, "rtc_service_init failed (%d); time display will not work", rtc_ret);
+    } else {
+        xTaskCreate(rtc_sync_task, "rtc_sync", 4096, NULL, 5, NULL);
+    }
+    xTaskCreate(rtc_display_task, "rtc_disp", 4096, NULL, 5, NULL);
 }

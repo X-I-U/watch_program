@@ -34,7 +34,11 @@ typedef struct
 	lv_obj_t *screen_2_cont_6;
 	lv_obj_t *screen_2_img_4;
 	lv_obj_t *screen_2_animimg_1;
-	lv_obj_t *screen_2_digital_clock_1;
+	lv_obj_t *screen_2_datetext_1;
+	lv_obj_t *screen_2_cont_7;
+	lv_obj_t *screen_2_label_1;
+	lv_obj_t *screen_2_cont_8;
+	lv_obj_t *screen_2_label_2;
 	lv_obj_t *screen_3;
 	bool screen_3_del;
 	lv_obj_t *screen_3_cont_1;
@@ -62,7 +66,19 @@ typedef struct
 	lv_obj_t *screen_3_label_4;
 	lv_obj_t *screen_4;
 	bool screen_4_del;
+	lv_obj_t *screen_4_carousel_1;
+	lv_obj_t *screen_4_carousel_1_element_1;
+	lv_obj_t *screen_4_carousel_1_element_2;
+	lv_obj_t *screen_4_label_1;
+	lv_obj_t *screen_4_label_2;
+	lv_obj_t *screen_4_label_3;
+	lv_obj_t *screen_4_label_4;
+	lv_obj_t *screen_4_label_5;
+	lv_obj_t *screen_4_label_6;
+	lv_obj_t *screen_4_label_7;
+	lv_obj_t *screen_4_label_39;
 	lv_obj_t *screen_4_img_1;
+	lv_obj_t *screen_4_label_40;
 	lv_obj_t *screen_5;
 	bool screen_5_del;
 	lv_obj_t *screen_5_tabview_1;
@@ -134,6 +150,10 @@ typedef struct
 	lv_obj_t *screen_7_cont_24;
 	lv_obj_t *screen_7_label_19;
 	lv_obj_t *screen_7_label_20;
+	lv_obj_t *screen_8;
+	bool screen_8_del;
+	lv_obj_t *screen_8_label_1;
+	lv_obj_t *screen_8_label_2;
 }lv_ui;
 
 typedef void (*ui_setup_scr_t)(lv_ui * ui);
@@ -163,6 +183,7 @@ void setup_scr_screen_4(lv_ui *ui);
 void setup_scr_screen_5(lv_ui *ui);
 void setup_scr_screen_6(lv_ui *ui);
 void setup_scr_screen_7(lv_ui *ui);
+void setup_scr_screen_8(lv_ui *ui);
 LV_IMG_DECLARE(_gaming_alpha_34x33);
 LV_IMG_DECLARE(_tool_alpha_42x43);
 LV_IMG_DECLARE(_calendar1_alpha_29x35);
@@ -199,7 +220,7 @@ LV_IMG_DECLARE(screen_2_animimg_154);
 LV_IMG_DECLARE(screen_2_animimg_156);
 LV_IMG_DECLARE(screen_2_animimg_158);
 LV_IMG_DECLARE(_back_alpha_45x40);
-LV_IMG_DECLARE(_calendar1_alpha_100x100);
+LV_IMG_DECLARE(_back_alpha_37x31);
 LV_IMG_DECLARE(_blank_alpha_51x51);
 LV_IMG_DECLARE(_stop_alpha_33x32);
 LV_IMG_DECLARE(_start_alpha_41x33);
@@ -209,14 +230,16 @@ LV_IMG_DECLARE(_menu_alpha_37x36);
 LV_IMG_DECLARE(_JAY2_alpha_110x109);
 LV_IMG_DECLARE(_delate_alpha_41x25);
 
-LV_FONT_DECLARE(lv_font_Alatsi_Regular_40)
+LV_FONT_DECLARE(lv_font_montserratMedium_19)
+LV_FONT_DECLARE(lv_font_SourceHanSansSC_Regular_20)
+LV_FONT_DECLARE(lv_font_montserratMedium_25)
 LV_FONT_DECLARE(lv_font_Acme_Regular_40)
 LV_FONT_DECLARE(lv_font_Acme_Regular_25)
-LV_FONT_DECLARE(lv_font_montserratMedium_12)
+LV_FONT_DECLARE(lv_font_montserratMedium_16)
+LV_FONT_DECLARE(lv_font_SourceHanSansSC_Regular_12)
 LV_FONT_DECLARE(lv_font_Acme_Regular_16)
 LV_FONT_DECLARE(lv_font_Alatsi_Regular_18)
 LV_FONT_DECLARE(lv_font_SourceHanSansSC_Regular_16)
-LV_FONT_DECLARE(lv_font_SourceHanSansSC_Regular_20)
 LV_FONT_DECLARE(lv_font_Acme_Regular_30)
 LV_FONT_DECLARE(lv_font_Acme_Regular_50)
 LV_FONT_DECLARE(lv_font_Acme_Regular_35)

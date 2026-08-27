@@ -24,7 +24,9 @@ void clock_count(int *hour, int *min, int *sec);
 
 
 extern const lv_img_dsc_t * screen_2_animimg_1_imgs[29];
-void screen_2_digital_clock_1_timer(lv_timer_t *timer);
+void screen_2_datetext_1_event_handler(lv_event_t *e);
+void screen_2_datetext_1_calendar_event_handler(lv_event_t *e);
+void screen_2_datetext_1_init_calendar(lv_obj_t *obj, char * s);
 
 #ifdef __cplusplus
 }

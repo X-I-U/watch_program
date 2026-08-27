@@ -4,7 +4,7 @@
  * 因此 GUI Guider 重新导出覆盖 generated/ 后依然生效，无需每次手动改生成代码。
  *
  * 作用：
- *  1) 先引入真实 lvgl.h，再引入 GUI Guider 数字时钟扩展控件 lv_dclock.h
+ *  1) 先引入真实 lvgl.h，再引入 GUI Guider 扩展控件 lv_dclock.h / lv_carousel.h
  *  2) GUI Guider 的 lv_animimg_set_src 多一个第4参 reverse，LVGL 8.4 没有；
  *     用宏把 4 参调用折叠成 3 参（reverse=false 与 LVGL 默认正向播放一致）。
  */
@@ -13,6 +13,7 @@
 
 #include "lvgl.h"
 #include "lv_dclock.h"
+#include "lv_carousel.h"
 
 #define lv_animimg_set_src(img, dsc, num, reverse) lv_animimg_set_src(img, dsc, num)
 

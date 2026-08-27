@@ -3,7 +3,8 @@
 
 #include "gui_guider.h"
 
-/* screen_6 创建完成时调用（在 events_init_screen_6 末尾挂接） */
+//在event_init.c中添加#include "music_ui.h"
+//在函数events_init_screen_6()中调用music_ui_screen_created(ui);
 void music_ui_screen_created(lv_ui *ui);
 
 #endif

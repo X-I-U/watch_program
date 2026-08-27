@@ -110,7 +110,10 @@ static void music_refresh_cb(lv_timer_t *timer)
     s_prev_state = st;
 }
 
-/* screen_6 被销毁（离开音乐页）时删除刷新定时器并清空控件指针，避免悬空访问 */
+/* 控件/屏幕被删除时删除刷新定时器并清空控件指针，避免悬空访问（LoadProhibited 崩溃）。
+   【关键】GUI Guider 的 ui_load_scr_animation 对旧屏会先 lv_obj_clean()（立即释放子控件），
+   而 screen_6 自己的 LV_EVENT_DELETE 要等动画结束 auto_del 才触发——刷新定时器若不提前停掉，
+   会在 200ms 延时窗口里访问已释放的控件。所以这个回调同时挂在 4 个控件上：任一被删即停定时器。 */
 static void music_screen_delete_cb(lv_event_t *e)
 {
     if (s_refresh_timer) {
@@ -150,7 +153,13 @@ void music_ui_screen_created(lv_ui *ui)
     lv_obj_add_event_cb(ui->screen_6_cont_1, music_playlist_item_cb, LV_EVENT_ALL, (void *)(intptr_t)0);
     lv_obj_add_event_cb(ui->screen_6_cont_2, music_playlist_item_cb, LV_EVENT_ALL, (void *)(intptr_t)1);
 
-    /* screen 销毁时清理定时器 */
+    /* 控件级删除监听：lv_obj_clean(screen_6) 释放子控件的瞬间就停刷新定时器，
+       早于 screen_6 的 LV_EVENT_DELETE（后者要等切屏动画 auto_del 才触发） */
+    lv_obj_add_event_cb(s_title_label, music_screen_delete_cb, LV_EVENT_DELETE, NULL);
+    lv_obj_add_event_cb(s_slider,      music_screen_delete_cb, LV_EVENT_DELETE, NULL);
+    lv_obj_add_event_cb(s_play_btn,    music_screen_delete_cb, LV_EVENT_DELETE, NULL);
+    lv_obj_add_event_cb(s_pause_btn,   music_screen_delete_cb, LV_EVENT_DELETE, NULL);
+    /* screen 自身销毁时兜底清理定时器（正常 lv_obj_del 路径） */
     lv_obj_add_event_cb(ui->screen_6, music_screen_delete_cb, LV_EVENT_DELETE, NULL);
 
     /* 刷新定时器（500ms） */

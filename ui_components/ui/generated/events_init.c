@@ -10,9 +10,12 @@
 #include "events_init.h"
 #include <stdio.h>
 #include "lvgl.h"
+
+/* [LOCAL 手动接入，GUI Guider 重导出会覆盖 events_init.c，需重新加] */
 #include "calc_ui.h"
 #include "game2048_ui.h"
 #include "music_ui.h"
+#include "calendar_ui.h"
 
 #if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
 #include "freemaster_client.h"
@@ -132,23 +135,13 @@ void events_init_screen_3 (lv_ui *ui)
     game2048_ui_screen_created(ui);
 }
 
-static void screen_4_event_handler (lv_event_t *e)
+static void screen_4_img_1_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     switch (code) {
-    case LV_EVENT_GESTURE:
+    case LV_EVENT_SHORT_CLICKED:
     {
-        lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
-        switch(dir) {
-        case LV_DIR_RIGHT:
-        {
-            lv_indev_wait_release(lv_indev_get_act());
-            ui_load_scr_animation(&guider_ui, &guider_ui.screen_2, guider_ui.screen_2_del, &guider_ui.screen_4_del, setup_scr_screen_2, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 200, true, true);
-            break;
-        }
-        default:
-            break;
-        }
+        ui_load_scr_animation(&guider_ui, &guider_ui.screen_2, guider_ui.screen_2_del, &guider_ui.screen_4_del, setup_scr_screen_2, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 200, true, true);
         break;
     }
     default:
@@ -158,7 +151,8 @@ static void screen_4_event_handler (lv_event_t *e)
 
 void events_init_screen_4 (lv_ui *ui)
 {
-    lv_obj_add_event_cb(ui->screen_4, screen_4_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->screen_4_img_1, screen_4_img_1_event_handler, LV_EVENT_ALL, ui);
+    calendar_ui_screen_created(ui);
 }
 
 static void screen_6_event_handler (lv_event_t *e)
@@ -172,8 +166,7 @@ static void screen_6_event_handler (lv_event_t *e)
         case LV_DIR_RIGHT:
         {
             lv_indev_wait_release(lv_indev_get_act());
-            /* [LOCAL PATCH] 返回主界面：去掉 200ms 动画延迟，避免停留背景色过久 */
-            ui_load_scr_animation(&guider_ui, &guider_ui.screen_2, guider_ui.screen_2_del, &guider_ui.screen_6_del, setup_scr_screen_2, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 0, true, true);
+            ui_load_scr_animation(&guider_ui, &guider_ui.screen_2, guider_ui.screen_2_del, &guider_ui.screen_6_del, setup_scr_screen_2, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 200, true, true);
             break;
         }
         default:
@@ -326,7 +319,7 @@ void events_init_screen_6 (lv_ui *ui)
     lv_obj_add_event_cb(ui->screen_6_cont_4, screen_6_cont_4_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_6_cont_5, screen_6_cont_5_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_6_cont_6, screen_6_cont_6_event_handler, LV_EVENT_ALL, ui);
-    music_ui_screen_created(ui);   /* 音乐业务接入点 */
+    music_ui_screen_created(ui);
 }
 
 static void screen_7_event_handler (lv_event_t *e)

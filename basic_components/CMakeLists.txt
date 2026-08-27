@@ -5,7 +5,8 @@ set(src_dirs
             espressif__esp_lcd_tk018
             SPEAKER
             AXP2101
-            AUDIO_STREAM)
+            AUDIO_STREAM
+            BASIC_TIMER)
 
 set(include_dirs
             LCD
@@ -14,7 +15,8 @@ set(include_dirs
             espressif__esp_lcd_tk018/include
             SPEAKER
             AXP2101
-            AUDIO_STREAM)
+            AUDIO_STREAM
+            BASIC_TIMER)
 
 set(requires
             driver
