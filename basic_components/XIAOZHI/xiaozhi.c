@@ -41,6 +41,8 @@ static esp_audio_simple_dec_handle_t s_simple_dec = NULL;
 static uint32_t s_audio_rx_frames = 0;   /* [diag] 服务器音频帧计数 */
 static uint32_t s_play_frames     = 0;   /* [diag] 播放取出字节计数 */
 
+static void xiaozhi_conv_task(void *arg);
+
 /* ---------- ESP 事件系统: 连接/音频通道状态 ---------- */
 static void xiaozhi_esp_event_handler(void *arg, esp_event_base_t base, int32_t id, void *event_data)
 {
@@ -103,7 +105,12 @@ static void xiaozhi_event_cb(esp_xiaozhi_chat_event_t event, void *event_data, v
             if (s_dec_in) {
                 rb_reset(s_dec_in);   /* 清掉缓冲的旧帧, 防下轮播放残留 */
             }
-            ESP_LOGI(TAG, "[tts] speaking stop");
+            /* 连续对话: 说完恢复采音 + 重新告诉服务器"继续听" */
+            if (s_session) {
+                s_listening = true;
+                esp_xiaozhi_chat_send_start_listening(s_chat, ESP_XIAOZHI_CHAT_LISTENING_MODE_AUTO);
+            }
+            ESP_LOGI(TAG, "[tts] speaking stop, listening again");
         }
         break;
     }
@@ -314,7 +321,9 @@ esp_err_t xiaozhi_init(void)
                                     MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);   /* OPUS编码吃栈, ADF 元素也是40KB */
     xTaskCreatePinnedToCoreWithCaps(xiaozhi_play_task, "xz_play", 32 * 1024, NULL, 6, NULL, tskNO_AFFINITY,
                                     MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);   /* OPUS解码吃栈(参考30KB) */
-    spk_set_gain(0.25f);   /* TTS 满幅+MAX98357高增益→电流大→欠压重启, 压到 1/4 幅度 */
+    xTaskCreatePinnedToCoreWithCaps(xiaozhi_conv_task, "xz_conv", 8192, NULL, 3, NULL, tskNO_AFFINITY,
+                                    MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);   /* 连续对话保活: 通道关了自动重开 */
+    spk_set_gain(0.35f);   /* TTS 满幅+MAX98357高增益→电流大→欠压重启, 压到 1/4 幅度 */
 
     ESP_RETURN_ON_ERROR(esp_xiaozhi_chat_start(s_chat), TAG, "chat start failed");
     ESP_LOGI(TAG, "chat started (waiting for events)");
@@ -344,6 +353,17 @@ esp_err_t xiaozhi_talk(void)
     };
     ESP_RETURN_ON_ERROR(esp_xiaozhi_chat_open_audio_channel(s_chat, &audio, NULL, 0),
                         TAG, "open audio channel");
-    ESP_LOGI(TAG, "talk: audio channel opening (pcm 16k mono)");
+    ESP_LOGI(TAG, "talk: audio channel opening (opus 16k mono)");
     return ESP_OK;
+}
+
+/* 连续对话保活: 连上且无会话时周期重开音频通道(首次连接 / 服务器关通道后) */
+static void xiaozhi_conv_task(void *arg)
+{
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        if (s_connected && !s_session && !s_speaking) {
+            xiaozhi_talk();
+        }
+    }
 }
