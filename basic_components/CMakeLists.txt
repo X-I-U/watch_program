@@ -6,7 +6,9 @@ set(src_dirs
             SPEAKER
             AXP2101
             AUDIO_STREAM
-            BASIC_TIMER)
+            BASIC_TIMER
+            MIC_DRIVER
+            XIAOZHI)
 
 set(include_dirs
             LCD
@@ -16,7 +18,9 @@ set(include_dirs
             SPEAKER
             AXP2101
             AUDIO_STREAM
-            BASIC_TIMER)
+            BASIC_TIMER
+            MIC_DRIVER
+            XIAOZHI)
 
 set(requires
             driver
@@ -29,6 +33,8 @@ set(requires
             lvgl__lvgl
             audio_pipeline
             audio_stream
-            esp-adf-libs)
+            esp-adf-libs
+            esp_audio_codec
+            espressif__esp_xiaozhi)
 
 idf_component_register(SRC_DIRS ${src_dirs} INCLUDE_DIRS ${include_dirs} REQUIRES ${requires})

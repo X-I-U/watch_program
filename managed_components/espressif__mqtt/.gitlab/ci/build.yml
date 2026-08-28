@@ -1,0 +1,27 @@
+# Including the wrapper component to import IDF images matrix
+
+include:
+    - component: $CI_SERVER_FQDN/ci/actions/idf-dynamic-pipeline/ci-component@main
+      inputs:
+          build-job-tags: ["brew", "build"]
+          job-suffix: ":idf-latest"
+    - component: $CI_SERVER_FQDN/ci/actions/idf-dynamic-pipeline/ci-component@main
+      inputs:
+          build-job-tags: ["brew", "build"]
+          job-suffix: ":idf-v6.1"
+    - component: $CI_SERVER_FQDN/ci/actions/idf-dynamic-pipeline/ci-component@main
+      inputs:
+          build-job-tags: ["brew", "build"]
+          job-suffix: ":idf-v6.0"
+    - component: $CI_SERVER_FQDN/ci/actions/idf-dynamic-pipeline/ci-component@main
+      inputs:
+          build-job-tags: ["brew", "build"]
+          job-suffix: ":idf-v5.5"
+    - component: $CI_SERVER_FQDN/ci/actions/idf-dynamic-pipeline/ci-component@main
+      inputs:
+          build-job-tags: ["brew", "build"]
+          job-suffix: ":idf-v5.4"
+    - component: $CI_SERVER_FQDN/ci/actions/idf-dynamic-pipeline/ci-component@main
+      inputs:
+          build-job-tags: ["brew", "build"]
+          job-suffix: ":idf-v5.3"

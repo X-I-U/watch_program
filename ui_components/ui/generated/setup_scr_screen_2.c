@@ -34,7 +34,7 @@ void setup_scr_screen_2(lv_ui *ui)
     //Write codes screen_2_tileview_1
     ui->screen_2_tileview_1 = lv_tileview_create(ui->screen_2);
     ui->screen_2_tileview_1_tile = lv_tileview_add_tile(ui->screen_2_tileview_1, 0, 0, LV_DIR_RIGHT);
-    lv_obj_set_pos(ui->screen_2_tileview_1, 0, 173);
+    lv_obj_set_pos(ui->screen_2_tileview_1, 0, 164);
     lv_obj_set_size(ui->screen_2_tileview_1, 240, 109);
     lv_obj_set_scrollbar_mode(ui->screen_2_tileview_1, LV_SCROLLBAR_MODE_OFF);
 
@@ -145,9 +145,25 @@ void setup_scr_screen_2(lv_ui *ui)
     lv_obj_set_style_pad_right(ui->screen_2_cont_4, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->screen_2_cont_4, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
 
+    //Write codes screen_2_img_6
+    ui->screen_2_img_6 = lv_img_create(ui->screen_2_cont_4);
+    lv_obj_add_flag(ui->screen_2_img_6, LV_OBJ_FLAG_CLICKABLE);
+    lv_img_set_src(ui->screen_2_img_6, &_ai_alpha_36x33);
+    lv_img_set_pivot(ui->screen_2_img_6, 50,50);
+    lv_img_set_angle(ui->screen_2_img_6, 0);
+    lv_obj_set_pos(ui->screen_2_img_6, 5, 6);
+    lv_obj_set_size(ui->screen_2_img_6, 36, 33);
+
+    //Write style for screen_2_img_6, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_img_recolor_opa(ui->screen_2_img_6, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_img_recolor(ui->screen_2_img_6, lv_color_hex(0x0f38e2), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_img_opa(ui->screen_2_img_6, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_2_img_6, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_clip_corner(ui->screen_2_img_6, true, LV_PART_MAIN|LV_STATE_DEFAULT);
+
     //Write codes screen_2_cont_3
     ui->screen_2_cont_3 = lv_obj_create(ui->screen_2_tileview_1_tile);
-    lv_obj_set_pos(ui->screen_2_cont_3, 66, 12);
+    lv_obj_set_pos(ui->screen_2_cont_3, 66, 7);
     lv_obj_set_size(ui->screen_2_cont_3, 50, 50);
     lv_obj_set_scrollbar_mode(ui->screen_2_cont_3, LV_SCROLLBAR_MODE_OFF);
 
@@ -243,11 +259,11 @@ void setup_scr_screen_2(lv_ui *ui)
     //Write codes screen_2_img_4
     ui->screen_2_img_4 = lv_img_create(ui->screen_2_cont_6);
     lv_obj_add_flag(ui->screen_2_img_4, LV_OBJ_FLAG_CLICKABLE);
-    lv_img_set_src(ui->screen_2_img_4, &_clock_alpha_33x31);
+    lv_img_set_src(ui->screen_2_img_4, &_clock2_alpha_36x33);
     lv_img_set_pivot(ui->screen_2_img_4, 50,50);
     lv_img_set_angle(ui->screen_2_img_4, 0);
-    lv_obj_set_pos(ui->screen_2_img_4, 7, 7);
-    lv_obj_set_size(ui->screen_2_img_4, 33, 31);
+    lv_obj_set_pos(ui->screen_2_img_4, 5, 7);
+    lv_obj_set_size(ui->screen_2_img_4, 36, 33);
 
     //Write style for screen_2_img_4, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_img_recolor_opa(ui->screen_2_img_4, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -262,7 +278,7 @@ void setup_scr_screen_2(lv_ui *ui)
     lv_animimg_set_duration(ui->screen_2_animimg_1, 30*29);
     lv_animimg_set_repeat_count(ui->screen_2_animimg_1, LV_ANIM_REPEAT_INFINITE);
     lv_animimg_start(ui->screen_2_animimg_1);
-    lv_obj_set_pos(ui->screen_2_animimg_1, 150, 4);
+    lv_obj_set_pos(ui->screen_2_animimg_1, 148, 44);
     lv_obj_set_size(ui->screen_2_animimg_1, 87, 82);
 
     //Write codes screen_2_datetext_1
@@ -271,8 +287,8 @@ void setup_scr_screen_2(lv_ui *ui)
     lv_obj_set_style_text_align(ui->screen_2_datetext_1, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_add_flag(ui->screen_2_datetext_1, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(ui->screen_2_datetext_1, screen_2_datetext_1_event_handler, LV_EVENT_ALL, NULL);
-    lv_obj_set_pos(ui->screen_2_datetext_1, 10, 12);
-    lv_obj_set_size(ui->screen_2_datetext_1, 130, 36);
+    lv_obj_set_pos(ui->screen_2_datetext_1, 5, 4);
+    lv_obj_set_size(ui->screen_2_datetext_1, 143, 34);
 
     //Write style for screen_2_datetext_1, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_text_color(ui->screen_2_datetext_1, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -295,8 +311,8 @@ void setup_scr_screen_2(lv_ui *ui)
 
     //Write codes screen_2_cont_7
     ui->screen_2_cont_7 = lv_obj_create(ui->screen_2);
-    lv_obj_set_pos(ui->screen_2_cont_7, 22, 54);
-    lv_obj_set_size(ui->screen_2_cont_7, 102, 36);
+    lv_obj_set_pos(ui->screen_2_cont_7, 5, 44);
+    lv_obj_set_size(ui->screen_2_cont_7, 97, 35);
     lv_obj_set_scrollbar_mode(ui->screen_2_cont_7, LV_SCROLLBAR_MODE_OFF);
 
     //Write style for screen_2_cont_7, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -342,8 +358,8 @@ void setup_scr_screen_2(lv_ui *ui)
 
     //Write codes screen_2_cont_8
     ui->screen_2_cont_8 = lv_obj_create(ui->screen_2);
-    lv_obj_set_pos(ui->screen_2_cont_8, 10, 96);
-    lv_obj_set_size(ui->screen_2_cont_8, 126, 46);
+    lv_obj_set_pos(ui->screen_2_cont_8, 5, 85);
+    lv_obj_set_size(ui->screen_2_cont_8, 134, 46);
     lv_obj_set_scrollbar_mode(ui->screen_2_cont_8, LV_SCROLLBAR_MODE_OFF);
 
     //Write style for screen_2_cont_8, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -368,8 +384,8 @@ void setup_scr_screen_2(lv_ui *ui)
     ui->screen_2_label_2 = lv_label_create(ui->screen_2_cont_8);
     lv_label_set_text(ui->screen_2_label_2, "21:20:50");
     lv_label_set_long_mode(ui->screen_2_label_2, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(ui->screen_2_label_2, 7, 8);
-    lv_obj_set_size(ui->screen_2_label_2, 108, 25);
+    lv_obj_set_pos(ui->screen_2_label_2, 8, 8);
+    lv_obj_set_size(ui->screen_2_label_2, 115, 25);
 
     //Write style for screen_2_label_2, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_border_width(ui->screen_2_label_2, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -386,6 +402,67 @@ void setup_scr_screen_2(lv_ui *ui)
     lv_obj_set_style_pad_bottom(ui->screen_2_label_2, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(ui->screen_2_label_2, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->screen_2_label_2, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes screen_2_bar_1
+    ui->screen_2_bar_1 = lv_bar_create(ui->screen_2);
+    lv_obj_set_style_anim_time(ui->screen_2_bar_1, 1000, 0);
+    lv_bar_set_mode(ui->screen_2_bar_1, LV_BAR_MODE_NORMAL);
+    lv_bar_set_range(ui->screen_2_bar_1, 0, 100);
+    lv_bar_set_value(ui->screen_2_bar_1, 50, LV_ANIM_OFF);
+    lv_obj_set_pos(ui->screen_2_bar_1, 202, 4);
+    lv_obj_set_size(ui->screen_2_bar_1, 33, 20);
+
+    //Write style for screen_2_bar_1, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_bg_opa(ui->screen_2_bar_1, 125, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->screen_2_bar_1, lv_color_hex(0x949393), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->screen_2_bar_1, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_2_bar_1, 10, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->screen_2_bar_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write style for screen_2_bar_1, Part: LV_PART_INDICATOR, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_bg_opa(ui->screen_2_bar_1, 255, LV_PART_INDICATOR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->screen_2_bar_1, lv_color_hex(0x2195f6), LV_PART_INDICATOR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->screen_2_bar_1, LV_GRAD_DIR_NONE, LV_PART_INDICATOR|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_2_bar_1, 10, LV_PART_INDICATOR|LV_STATE_DEFAULT);
+
+    //Write codes screen_2_label_3
+    ui->screen_2_label_3 = lv_label_create(ui->screen_2);
+    lv_label_set_text(ui->screen_2_label_3, "30%");
+    lv_label_set_long_mode(ui->screen_2_label_3, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(ui->screen_2_label_3, 202, 28);
+    lv_obj_set_size(ui->screen_2_label_3, 31, 10);
+
+    //Write style for screen_2_label_3, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->screen_2_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_2_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->screen_2_label_3, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_2_label_3, &lv_font_montserratMedium_10, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->screen_2_label_3, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->screen_2_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui->screen_2_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->screen_2_label_3, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->screen_2_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->screen_2_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->screen_2_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->screen_2_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->screen_2_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->screen_2_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes screen_2_img_7
+    ui->screen_2_img_7 = lv_img_create(ui->screen_2);
+    lv_obj_add_flag(ui->screen_2_img_7, LV_OBJ_FLAG_CLICKABLE);
+    lv_img_set_src(ui->screen_2_img_7, &_wifi_alpha_27x25);
+    lv_img_set_pivot(ui->screen_2_img_7, 50,50);
+    lv_img_set_angle(ui->screen_2_img_7, 0);
+    lv_obj_set_pos(ui->screen_2_img_7, 161, 4);
+    lv_obj_set_size(ui->screen_2_img_7, 27, 25);
+
+    //Write style for screen_2_img_7, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_img_recolor_opa(ui->screen_2_img_7, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_img_recolor(ui->screen_2_img_7, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_img_opa(ui->screen_2_img_7, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_2_img_7, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_clip_corner(ui->screen_2_img_7, true, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //The custom code of screen_2.
 

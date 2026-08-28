@@ -27,6 +27,7 @@ typedef struct
 	lv_obj_t *screen_2_cont_2;
 	lv_obj_t *screen_2_img_5;
 	lv_obj_t *screen_2_cont_4;
+	lv_obj_t *screen_2_img_6;
 	lv_obj_t *screen_2_cont_3;
 	lv_obj_t *screen_2_img_2;
 	lv_obj_t *screen_2_cont_5;
@@ -39,6 +40,9 @@ typedef struct
 	lv_obj_t *screen_2_label_1;
 	lv_obj_t *screen_2_cont_8;
 	lv_obj_t *screen_2_label_2;
+	lv_obj_t *screen_2_bar_1;
+	lv_obj_t *screen_2_label_3;
+	lv_obj_t *screen_2_img_7;
 	lv_obj_t *screen_3;
 	bool screen_3_del;
 	lv_obj_t *screen_3_cont_1;
@@ -81,9 +85,47 @@ typedef struct
 	lv_obj_t *screen_4_label_40;
 	lv_obj_t *screen_5;
 	bool screen_5_del;
-	lv_obj_t *screen_5_tabview_1;
-	lv_obj_t *screen_5_tabview_1_tab_1;
-	lv_obj_t *screen_5_tabview_1_tab_2;
+	lv_obj_t *screen_5_carousel_1;
+	lv_obj_t *screen_5_carousel_1_element_1;
+	lv_obj_t *screen_5_carousel_1_element_2;
+	lv_obj_t *screen_5_cont_2;
+	lv_obj_t *screen_5_label_2;
+	lv_obj_t *screen_5_cont_3;
+	lv_obj_t *screen_5_label_3;
+	lv_obj_t *screen_5_cont_1;
+	lv_obj_t *screen_5_img_3;
+	lv_obj_t *screen_5_label_4;
+	lv_obj_t *screen_5_label_5;
+	lv_obj_t *screen_5_label_6;
+	lv_obj_t *screen_5_label_7;
+	lv_obj_t *screen_5_label_8;
+	lv_obj_t *screen_5_label_9;
+	lv_obj_t *screen_5_label_1;
+	lv_obj_t *screen_5_img_4;
+	lv_obj_t *screen_5_cont_4;
+	lv_obj_t *screen_5_cont_5;
+	lv_obj_t *screen_5_label_11;
+	lv_obj_t *screen_5_label_12;
+	lv_obj_t *screen_5_label_13;
+	lv_obj_t *screen_5_label_14;
+	lv_obj_t *screen_5_label_15;
+	lv_obj_t *screen_5_tileview_1;
+	lv_obj_t *screen_5_tileview_1_tile;
+	lv_obj_t *screen_5_cont_6;
+	lv_obj_t *screen_5_sw_1;
+	lv_obj_t *screen_5_label_16;
+	lv_obj_t *screen_5_cont_7;
+	lv_obj_t *screen_5_sw_2;
+	lv_obj_t *screen_5_label_17;
+	lv_obj_t *screen_5_cont_8;
+	lv_obj_t *screen_5_sw_3;
+	lv_obj_t *screen_5_label_18;
+	lv_obj_t *screen_5_btn_1;
+	lv_obj_t *screen_5_btn_1_label;
+	lv_obj_t *screen_5_label_10;
+	lv_obj_t *screen_5_img_1;
+	lv_obj_t *screen_5_img_2;
+	lv_obj_t *screen_5_img_5;
 	lv_obj_t *screen_6;
 	bool screen_6_del;
 	lv_obj_t *screen_6_img_2;
@@ -154,6 +196,10 @@ typedef struct
 	bool screen_8_del;
 	lv_obj_t *screen_8_label_1;
 	lv_obj_t *screen_8_label_2;
+	lv_obj_t *screen_9;
+	bool screen_9_del;
+	lv_obj_t *screen_9_img_1;
+	lv_obj_t *screen_9_label_1;
 }lv_ui;
 
 typedef void (*ui_setup_scr_t)(lv_ui * ui);
@@ -184,11 +230,13 @@ void setup_scr_screen_5(lv_ui *ui);
 void setup_scr_screen_6(lv_ui *ui);
 void setup_scr_screen_7(lv_ui *ui);
 void setup_scr_screen_8(lv_ui *ui);
+void setup_scr_screen_9(lv_ui *ui);
 LV_IMG_DECLARE(_gaming_alpha_34x33);
 LV_IMG_DECLARE(_tool_alpha_42x43);
+LV_IMG_DECLARE(_ai_alpha_36x33);
 LV_IMG_DECLARE(_calendar1_alpha_29x35);
 LV_IMG_DECLARE(_music1_alpha_33x38);
-LV_IMG_DECLARE(_clock_alpha_33x31);
+LV_IMG_DECLARE(_clock2_alpha_36x33);
 #include "extra/widgets/animimg/lv_animimg.h"
 LV_IMG_DECLARE(screen_2_animimg_11);
 LV_IMG_DECLARE(screen_2_animimg_12);
@@ -219,8 +267,14 @@ LV_IMG_DECLARE(screen_2_animimg_152);
 LV_IMG_DECLARE(screen_2_animimg_154);
 LV_IMG_DECLARE(screen_2_animimg_156);
 LV_IMG_DECLARE(screen_2_animimg_158);
+LV_IMG_DECLARE(_wifi_alpha_27x25);
 LV_IMG_DECLARE(_back_alpha_45x40);
 LV_IMG_DECLARE(_back_alpha_37x31);
+LV_IMG_DECLARE(_stop_alpha_35x36);
+LV_IMG_DECLARE(_start_alpha_47x35);
+LV_IMG_DECLARE(_timer2_alpha_41x36);
+LV_IMG_DECLARE(_clock_alpha_42x39);
+LV_IMG_DECLARE(_back_alpha_37x34);
 LV_IMG_DECLARE(_blank_alpha_51x51);
 LV_IMG_DECLARE(_stop_alpha_33x32);
 LV_IMG_DECLARE(_start_alpha_41x33);
@@ -229,16 +283,16 @@ LV_IMG_DECLARE(_left_alpha_42x40);
 LV_IMG_DECLARE(_menu_alpha_37x36);
 LV_IMG_DECLARE(_JAY2_alpha_110x109);
 LV_IMG_DECLARE(_delate_alpha_41x25);
+LV_IMG_DECLARE(_xiaozhi_alpha_96x90);
 
 LV_FONT_DECLARE(lv_font_montserratMedium_19)
 LV_FONT_DECLARE(lv_font_SourceHanSansSC_Regular_20)
 LV_FONT_DECLARE(lv_font_montserratMedium_25)
+LV_FONT_DECLARE(lv_font_montserratMedium_10)
 LV_FONT_DECLARE(lv_font_Acme_Regular_40)
 LV_FONT_DECLARE(lv_font_Acme_Regular_25)
 LV_FONT_DECLARE(lv_font_montserratMedium_16)
-LV_FONT_DECLARE(lv_font_SourceHanSansSC_Regular_12)
-LV_FONT_DECLARE(lv_font_Acme_Regular_16)
-LV_FONT_DECLARE(lv_font_Alatsi_Regular_18)
+LV_FONT_DECLARE(lv_font_montserratMedium_20)
 LV_FONT_DECLARE(lv_font_SourceHanSansSC_Regular_16)
 LV_FONT_DECLARE(lv_font_Acme_Regular_30)
 LV_FONT_DECLARE(lv_font_Acme_Regular_50)

@@ -1,0 +1,29 @@
+[MQTT-4.7.3-2] topic names and filters not include null
+[MQTT-3.1.4-3] When rejecting connect, no more data must be processed
+[MQTT-3.14.4-2] Client must not send any more packets after disconnect
+[MQTT-2.3.1-1] packet indentifier must be in publish if QoS is 1 or 2
+[MQTT-3.1.3-9] if clientid is rejected, must send connack 2 and close connection
+[MQTT-3.2.2-1] must close connection after non-zero connack
+[MQTT-3.1.3-3] Clientid must be present, and first field
+[MQTT-3.1.2-16] username must not be in payload if user name flag is 0
+[MQTT-3.1.3-4] Clientid must be Unicode, and between 0 and 65535 bytes long
+[MQTT-3.1.3-8] Reject 0-length clientid with cleansession false
+CALL socket_create with {'port': 1883, 'hostname': 'localhost'}
+RESULT from socket_create is 0
+CALL connect with {'sockid': 0, 'cleansession': False, 'clientid': ''}
+OBSERVED EVENT (0, Connacks(DUP=False, QoS=0, Retain=False, Session present=False, ReturnCode=2))
+RESULT from connect is 2
+CALL publish with {'payload': b'1', 'topic': 'TopicA/B', 'sockid': 0, 'retained': True, 'packetid': 1, 'qos': 1}
+RESULT from publish is 1
+CALL publish with {'payload': b'1', 'topic': 'TopicA', 'sockid': 0, 'retained': False, 'packetid': 2, 'qos': 2}
+RESULT from publish is exception Traceback (most recent call last):
+  File "/home/icraggs/work/paho/org.eclipse.paho.mqtt.testing/interoperability/mbt/main.py", line 411, in step
+    rc = action(**kwargs)
+  File "/home/icraggs/work/paho/org.eclipse.paho.mqtt.testing/interoperability/mbt/main.py", line 175, in __call__
+    return self.fn(*args, **kwargs)
+  File "/home/icraggs/work/paho/org.eclipse.paho.mqtt.testing/interoperability/MQTTV311_spec.py", line 326, in publish
+    sock.send(publish.pack())
+  File "/home/icraggs/work/paho/org.eclipse.paho.mqtt.testing/interoperability/MQTTV311_spec.py", line 165, in send
+    raise Exception("not connected")
+Exception: not connected
+RESTART

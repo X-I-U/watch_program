@@ -456,6 +456,18 @@ esp_err_t i2s_alc_volume_get(audio_element_handle_t i2s_stream, int *volume);
  */
 esp_err_t i2s_stream_sync_delay(audio_element_handle_t i2s_stream, int delay_ms);
 
+/**
+ * @brief      [LOCAL PATCH 2026-08-27] 借出 I2S TX 通道给外部(小智 TTS 播放用)
+ *
+ * @param[in]  port      I2S port
+ * @param[out] std_cfg   非空时填当前 std 配置, 调用方播完按它恢复
+ *
+ * @return
+ *     - TX 通道句柄(可用 i2s_channel_* 重配/写入)
+ *     - NULL 该端口没有 TX 通道
+ */
+i2s_chan_handle_t i2s_stream_borrow_tx(i2s_port_t port, i2s_std_config_t *std_cfg);
+
 #ifdef __cplusplus
 }
 #endif

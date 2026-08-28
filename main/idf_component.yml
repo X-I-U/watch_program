@@ -4,6 +4,7 @@ dependencies:
   espressif/esp_lcd_touch_ft5x06: "^1.1.0"
   lvgl/lvgl: "^8.3.11"
   espressif/esp_lcd_spd2010: "^1.0.1"
+  espressif/esp_xiaozhi: "^0.1.2"   ## 小智AI 语音助手组件(协议/编解码层, IDF>=5.5)
   ## ADF 不在组件注册表，手动安装于 D:\Espressif\esp-adf，通过顶层 CMakeLists 的 EXTRA_COMPONENT_DIRS 接入。
   ## Required IDF version
   idf:

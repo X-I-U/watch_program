@@ -9,7 +9,8 @@ cmake_minimum_required(VERSION 3.16)
 set(EXTRA_COMPONENT_DIRS
     ${CMAKE_CURRENT_LIST_DIR}/ui_components
     ${CMAKE_CURRENT_LIST_DIR}/basic_components
-    ${CMAKE_CURRENT_LIST_DIR}/adf_components)
+    ${CMAKE_CURRENT_LIST_DIR}/adf_components
+    ${CMAKE_CURRENT_LIST_DIR}/adf_components/esp-adf-libs/esp_audio_codec)
 
 # [LOCAL PATCH 2026-08-25] adf_components/ 只含 audio_pipeline/audio_sal/audio_stream/esp-adf-libs
 # （从 D:\Espressif\esp-adf\components 拷贝）。不能直接指 $ENV{ADF_PATH}/components——那会把 ADF 全部

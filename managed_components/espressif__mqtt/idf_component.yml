@@ -1,0 +1,21 @@
+dependencies:
+  idf:
+    version: '>=5.3'
+description: ESP-MQTT - A robust MQTT client library for ESP32 microcontrollers supporting
+  MQTT 3.1.1 and 5.0 protocols with multiple transport layers
+documentation: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/protocols/mqtt.html
+issues: https://github.com/espressif/esp-mqtt/issues
+license: Apache-2.0
+maintainers:
+- Espressif Systems <support@espressif.com>
+repository: git://github.com/espressif/esp-mqtt.git
+repository_info:
+  commit_sha: 1a1e5788a5cf57a0f44a3c6c061407f6c9be1026
+  path: .
+tags:
+- mqtt
+- mqtt5
+- protocol
+- networking
+url: https://github.com/espressif/esp-mqtt
+version: 1.1.0

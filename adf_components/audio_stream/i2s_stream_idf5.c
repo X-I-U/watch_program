@@ -788,4 +788,17 @@ esp_err_t i2s_stream_sync_delay(audio_element_handle_t i2s_stream, int delay_ms)
     }
     return ESP_OK;
 }
+
+/* [LOCAL PATCH 2026-08-27] 借出 I2S TX 通道给外部(小智 TTS 播放用)。
+ * 返回 port 的 TX 通道句柄; std_cfg 非空时填当前配置, 调用方播完按它恢复。 */
+i2s_chan_handle_t i2s_stream_borrow_tx(i2s_port_t port, i2s_std_config_t *std_cfg)
+{
+    if (port >= SOC_I2S_NUM || i2s_key_slot[port].tx_handle == NULL) {
+        return NULL;
+    }
+    if (std_cfg) {
+        *std_cfg = i2s_key_slot[port].tx_std_cfg;
+    }
+    return i2s_key_slot[port].tx_handle;
+}
 #endif

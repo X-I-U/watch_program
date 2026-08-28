@@ -1,0 +1,24 @@
+[MQTT-4.7.3-2] topic names and filters not include null
+[MQTT-3.14.4-2] Client must not send any more packets after disconnect
+[MQTT-2.3.1-1] packet indentifier must be in subscribe
+CALL socket_create with {'port': 1883, 'hostname': 'localhost'}
+RESULT from socket_create is 0
+CALL socket_close with {'sockid': 0}
+CALL socket_create with {'port': 1883, 'hostname': 'localhost'}
+RESULT from socket_create is 1
+CALL socket_create with {'port': 1883, 'hostname': 'localhost'}
+RESULT from socket_create is 2
+CALL subscribe with {'sockid': 1, 'packetid': 1, 'topics': ('+/C',), 'qoss': (2,)}
+RESULT from subscribe is 1
+CALL publish with {'payload': b'longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong', 'topic': 'TopicA/B', 'sockid': 1, 'retained': True, 'packetid': 2, 'qos': 2}
+RESULT from publish is exception Traceback (most recent call last):
+  File "/home/icraggs/work/paho/org.eclipse.paho.mqtt.testing/interoperability/mbt/main.py", line 411, in step
+    rc = action(**kwargs)
+  File "/home/icraggs/work/paho/org.eclipse.paho.mqtt.testing/interoperability/mbt/main.py", line 175, in __call__
+    return self.fn(*args, **kwargs)
+  File "/home/icraggs/work/paho/org.eclipse.paho.mqtt.testing/interoperability/MQTTV311_spec.py", line 326, in publish
+    sock.send(publish.pack())
+  File "/home/icraggs/work/paho/org.eclipse.paho.mqtt.testing/interoperability/MQTTV311_spec.py", line 165, in send
+    raise Exception("not connected")
+Exception: not connected
+RESTART

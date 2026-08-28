@@ -1,0 +1,370 @@
+ESP-MQTT
+========
+
+:link_to_translation:`zh_CN:[中文]`
+
+Overview
+--------
+
+ESP-MQTT is an implementation of `MQTT <https://mqtt.org/>`__ protocol client, which is a lightweight publish/subscribe messaging protocol. Now ESP-MQTT supports `MQTT v5.0 <https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html>`__.
+
+
+Features
+--------
+
+   * Support MQTT over TCP, SSL with Mbed TLS, MQTT over WebSocket, and MQTT over WebSocket Secure
+   * Easy to setup with URI
+   * Multiple instances (multiple clients in one application)
+   * Support subscribing, publishing, authentication, last will messages, keep alive pings, and all 3 Quality of Service (QoS) levels (it should be a fully functional client)
+
+
+Application Examples
+--------------------
+
+   - :example:`tcp` demonstrates how to implement MQTT communication over TCP (default port 1883).
+
+   - :example:`ssl` demonstrates how to use SSL transport to implement MQTT communication over TLS (default port 8883).
+
+   - :example:`ssl_ds` demonstrates how to use digital signature peripheral for authentication to implement MQTT communication over TLS (default port 8883).
+
+   - :example:`ssl_mutual_auth` demonstrates how to use certificates for authentication to implement MQTT communication (default port 8883).
+
+   - :example:`ssl_psk` demonstrates how to use pre-shared keys for authentication to implement MQTT communication over TLS (default port 8883).
+
+   - :example:`ws` demonstrates how to implement MQTT communication over WebSocket (default port 80).
+
+   - :example:`wss` demonstrates how to implement MQTT communication over WebSocket Secure (default port 443).
+
+   - :example:`mqtt5` demonstrates how to use ESP-MQTT library to connect to broker with MQTT v5.0.
+
+   - :example:`custom_outbox` demonstrates how to customize the outbox in the ESP-MQTT library.
+
+MQTT Message Retransmission
+---------------------------
+
+A new MQTT message can be created by calling :cpp:func:`esp_mqtt_client_publish <esp_mqtt_client_publish()>` or its non-blocking counterpart :cpp:func:`esp_mqtt_client_enqueue <esp_mqtt_client_enqueue()>`.
+
+Messages with QoS 0 are sent only once. QoS 1 and 2 behave differently since the protocol requires additional steps to complete the process.
+
+The ESP-MQTT library opts to always retransmit unacknowledged QoS 1 and 2 publish messages to prevent data loss in faulty connections, even though the MQTT specification requires the re-transmission only on reconnect with Clean Session flag been set to 0 (set :cpp:member:`disable_clean_session <esp_mqtt_client_config_t::session_t::disable_clean_session>` to true for this behavior).
+
+QoS 1 and 2 messages that may need retransmission are always enqueued, but first transmission try occurs immediately if :cpp:func:`esp_mqtt_client_publish <esp_mqtt_client_publish>` is used. A transmission retry for unacknowledged messages will occur after :cpp:member:`message_retransmit_timeout <esp_mqtt_client_config_t::session_t::message_retransmit_timeout>`. After :ref:`CONFIG_MQTT_OUTBOX_EXPIRED_TIMEOUT_MS` messages will expire and be deleted. If :ref:`CONFIG_MQTT_REPORT_DELETED_MESSAGES` is set, an event will be sent to notify the user.
+
+Configuration
+-------------
+
+The configuration is made by setting fields in :cpp:class:`esp_mqtt_client_config_t` struct. The configuration struct has the following sub structs to configure different aspects of the client operation.
+
+   * :cpp:class:`esp_mqtt_client_config_t::broker_t` - Allow to set address and security verification.
+   * :cpp:class:`esp_mqtt_client_config_t::credentials_t` - Client credentials for authentication.
+   * :cpp:class:`esp_mqtt_client_config_t::session_t` - Configuration for MQTT session aspects.
+   * :cpp:class:`esp_mqtt_client_config_t::network_t` - Networking related configuration.
+   * :cpp:class:`esp_mqtt_client_config_t::task_t` - Allow to configure FreeRTOS task.
+   * :cpp:class:`esp_mqtt_client_config_t::buffer_t` - Message buffer for send/receive operation.
+   * :cpp:class:`esp_mqtt_client_config_t::outbox_config_t` - Outbox capacity for pending QoS1/2 messages.
+
+In the following sections, the most common aspects are detailed.
+
+Broker
+^^^^^^^^^^^
+
+===========
+Address
+===========
+
+Broker address can be set by usage of :cpp:class:`address <esp_mqtt_client_config_t::broker_t::address_t>` struct. The configuration can be made by usage of :cpp:member:`uri <esp_mqtt_client_config_t::broker_t::address_t::uri>` field or the combination of :cpp:member:`hostname <esp_mqtt_client_config_t::broker_t::address_t::hostname>`, :cpp:member:`transport <esp_mqtt_client_config_t::broker_t::address_t::transport>` and :cpp:member:`port <esp_mqtt_client_config_t::broker_t::address_t::port>`. Optionally, :cpp:member:`path <esp_mqtt_client_config_t::broker_t::address_t::path>` could be set, this field is useful in WebSocket connections.
+
+The :cpp:member:`uri <esp_mqtt_client_config_t::broker_t::address_t::uri>` field is used in the format ``scheme://hostname:port/path``.
+
+-  Currently support ``mqtt``, ``mqtts``, ``ws``, ``wss`` schemes
+-  MQTT over TCP samples:
+
+   -  ``mqtt://mqtt.eclipseprojects.io``: MQTT over TCP, default port 1883
+   -  ``mqtt://mqtt.eclipseprojects.io:1884``: MQTT over TCP, port 1884
+   -  ``mqtt://username:password@mqtt.eclipseprojects.io:1884``: MQTT over TCP,
+      port 1884, with username and password
+
+-  MQTT over SSL samples:
+
+   -  ``mqtts://mqtt.eclipseprojects.io``: MQTT over SSL, port 8883
+   -  ``mqtts://mqtt.eclipseprojects.io:8884``: MQTT over SSL, port 8884
+
+-  MQTT over WebSocket samples:
+
+   -  ``ws://mqtt.eclipseprojects.io:80/mqtt``
+
+-  MQTT over WebSocket Secure samples:
+
+   -  ``wss://mqtt.eclipseprojects.io:443/mqtt``
+
+-  Minimal configurations:
+
+.. code-block:: c
+
+    const esp_mqtt_client_config_t mqtt_cfg = {
+        .broker.address.uri = "mqtt://mqtt.eclipseprojects.io",
+    };
+    esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
+    esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, client);
+    esp_mqtt_client_start(client);
+
+.. note::
+
+   By default MQTT client uses event loop library to post related MQTT events (connected, subscribed, published, etc.).
+
+============
+Verification
+============
+
+For secure connections with TLS used, and to guarantee Broker's identity, the :cpp:class:`verification <esp_mqtt_client_config_t::broker_t::verification_t>` struct must be set.
+The broker certificate may be set in PEM or DER format. To select DER, the equivalent :cpp:member:`certificate_len <esp_mqtt_client_config_t::broker_t::verification_t::certificate_len>` field must be set. Otherwise, a null-terminated string in PEM format should be provided to :cpp:member:`certificate <esp_mqtt_client_config_t::broker_t::verification_t::certificate>` field.
+
+-  Get certificate from server, example: ``mqtt.eclipseprojects.io``
+    .. code::
+
+       openssl s_client -showcerts -connect mqtt.eclipseprojects.io:8883 < /dev/null \
+       2> /dev/null | openssl x509 -outform PEM > mqtt_eclipse_org.pem
+
+-  Check the sample application: :example:`ssl`
+-  Configuration:
+
+.. code:: c
+
+    const esp_mqtt_client_config_t mqtt_cfg = {
+        .broker = {
+          .address.uri = "mqtts://mqtt.eclipseprojects.io:8883",
+          .verification.certificate = (const char *)mqtt_eclipse_org_pem_start,
+        },
+    };
+
+For details about other fields, please check the `API Reference`_ and :ref:`esp_tls_server_verification`.
+
+Client Credentials
+^^^^^^^^^^^^^^^^^^
+
+All client related credentials are under the :cpp:class:`credentials <esp_mqtt_client_config_t::credentials_t>` field.
+
+ * :cpp:member:`username <esp_mqtt_client_config_t::credentials_t::username>`: pointer to the username used for connecting to the broker, can also be set by URI
+ * :cpp:member:`client_id <esp_mqtt_client_config_t::credentials_t::client_id>`: pointer to the client ID, defaults to ``ESP32_%CHIPID%`` where ``%CHIPID%`` are the last 3 bytes of MAC address in hex format
+
+==============
+Authentication
+==============
+
+It is possible to set authentication parameters through the :cpp:class:`authentication <esp_mqtt_client_config_t::credentials_t::authentication_t>` field. The client supports the following authentication methods:
+
+ * :cpp:member:`password <esp_mqtt_client_config_t::credentials_t::authentication_t::password>`: use a password by setting
+ * :cpp:member:`certificate <esp_mqtt_client_config_t::credentials_t::authentication_t::certificate>` and :cpp:member:`key <esp_mqtt_client_config_t::credentials_t::authentication_t::key>`: mutual authentication with TLS, and both can be provided in PEM or DER format
+ * :cpp:member:`use_secure_element <esp_mqtt_client_config_t::credentials_t::authentication_t::use_secure_element>`: use secure element (ATECC608A) interfaced to ESP32 series
+ * :cpp:member:`ds_data <esp_mqtt_client_config_t::credentials_t::authentication_t::ds_data>`: use Digital Signature Peripheral available in some Espressif devices
+
+Session
+^^^^^^^^^^^
+
+For MQTT session-related configurations, :cpp:class:`session <esp_mqtt_client_config_t::session_t>` fields should be used.
+
+=======================
+Last Will and Testament
+=======================
+
+MQTT allows for a last will and testament (LWT) message to notify other clients when a client ungracefully disconnects. This is configured by the following fields in the :cpp:class:`last_will <esp_mqtt_client_config_t::session_t::last_will_t>` struct.
+
+ * :cpp:member:`topic <esp_mqtt_client_config_t::session_t::last_will_t::topic>`: pointer to the LWT message topic
+ * :cpp:member:`msg <esp_mqtt_client_config_t::session_t::last_will_t::msg>`: pointer to the LWT message
+ * :cpp:member:`msg_len <esp_mqtt_client_config_t::session_t::last_will_t::msg_len>`: length of the LWT message, required if :cpp:member:`msg <esp_mqtt_client_config_t::session_t::last_will_t::msg>` is not null-terminated
+ * :cpp:member:`qos <esp_mqtt_client_config_t::session_t::last_will_t::qos>`: quality of service for the LWT message
+ * :cpp:member:`retain <esp_mqtt_client_config_t::session_t::last_will_t::retain>`: specifies the retain flag of the LWT message
+
+Outbox (QoS persistence)
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ESP-MQTT keeps an in-RAM *outbox* for packets that require acknowledgement —
+primarily PUBLISH with QoS 1/2 (and the QoS2 handshake). Entries are sent FIFO
+when connected, retransmitted (with DUP) after reconnect, and removed on
+PUBACK/PUBREL/PUBCOMP.
+
+=====================
+Outbox configuration
+=====================
+
+The client has an outbox configuration field of type :c:struct:`outbox_config_t`:
+
+- :cpp:member:`outbox_config_t::limit` (bytes): Byte budget for the outbox.
+  If adding a new entry would exceed this budget, enqueue returns a negative value.
+
+=======================
+Sizing
+=======================
+
+The number of messages, that fit into outbox, depends on the topic/payload sizes plus
+a small per-message overhead (MQTT PUBLISH framing + metadata). A useful upper bound is::
+
+   floor( limit / (topic_len + payload_len + overhead_per_msg) )
+
+The effective overhead is typically ~4–6 bytes per message for messages, if topic length
+plus  payload length is much less than outbox limit. If ``limit`` is not a multiple of the 
+per-message size, the remainder reduce the final count by at most one entry.
+
+===============================
+Not related to outbox capacity
+===============================
+
+The ``out_size`` of :c:struct:`buffer_t` configures the transport’s **send buffer** used
+during encoding/writes; it does **not** affect how many messages can be queued in the outbox.
+
+=======================
+Publish vs. enqueue
+=======================
+
+- :c:func:`esp_mqtt_client_publish` sends immediately if connected.
+  QoS0 publish fails when disconnected; QoS1/2 are stored in the outbox until ACK.
+- :c:func:`esp_mqtt_client_enqueue` puts the message into the outbox first and
+  lets the MQTT task send it when possible. With ``store=true`` even QoS0 can be
+  queued locally (useful across brief disconnects).
+
+
+Change Settings in Project Configuration Menu
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The settings for MQTT can be found using :code:`idf.py menuconfig`, under ``Component config`` > ``ESP-MQTT Configuration``.
+
+The following settings are available:
+
+- :ref:`CONFIG_MQTT_PROTOCOL_311`: enable 3.1.1 version of MQTT protocol
+
+- :ref:`CONFIG_MQTT_TRANSPORT_SSL` and :ref:`CONFIG_MQTT_TRANSPORT_WEBSOCKET`: enable specific MQTT transport layer, such as SSL, WEBSOCKET, and WEBSOCKET_SECURE
+
+- :ref:`CONFIG_MQTT_CUSTOM_OUTBOX`: disable default implementation of mqtt_outbox, so a specific implementation can be supplied
+
+Memory placement
+^^^^^^^^^^^^^^^^
+
+On targets with external RAM (PSRAM), the biggest allocations of the client can be moved out of
+internal RAM:
+
+- :ref:`CONFIG_MQTT_OUTBOX_DATA_ON_EXTERNAL_MEMORY`: place the payloads of the messages kept in the
+  outbox in external memory.
+
+- :ref:`CONFIG_MQTT_BUFFERS_ON_EXTERNAL_MEMORY`: place the client input and output buffers (sized by
+  :cpp:member:`buffer.size <esp_mqtt_client_config_t::buffer_t::size>` and
+  :cpp:member:`buffer.out_size <esp_mqtt_client_config_t::buffer_t::out_size>`) in external memory.
+
+- :ref:`CONFIG_MQTT_TASK_STACK_ON_EXTERNAL_MEMORY`: place the MQTT task stack in external memory. The
+  task control block always stays in internal RAM. This option requires
+  :ref:`CONFIG_FREERTOS_TASK_CREATE_ALLOW_EXT_MEM`.
+
+External memory is inaccessible while the flash cache is disabled. With the task stack in external
+memory, the MQTT task must therefore not run any code that disables the cache: flash and NVS
+operations, and entering deep or light sleep, are not allowed from the MQTT task context. This
+includes user code running in an event handler dispatched by the MQTT task.
+
+Considerations when using ESP-MQTT with unstable network connection
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+When using ESP-MQTT with QoS>0 it does not send the message immediately, but keeps in in the outbox while it's being processed.
+With intermittent connection it may lead to messages piling up in the outbox waiting to be sent, and acknowledged by the broker.
+While this behaviour is normal this may pose a problem if the outbox size becomes too big over time. There are several ways to remedy that:
+
+1. Switching to QoS=0 so the outbox is not used, this will lead to possible message loss 
+2. Limiting the size of the outbox with `outbox.limit` in MQTT client config and handling outbox becoming too big with:
+
+   .. code:: c
+
+      int msg_id = esp_mqtt_client_publish(client, topic, data, len, qos, retain);
+       if (msg_id == -1) {
+           // an error has occurred during publishing
+       } else if (msg_id == -2) {
+           // outbox has became too big and it's impossible to publish new messages for now
+       } else {
+           // message was published successfully
+       }
+3. Monitoring the size of the outbox manually to decide whether message should be added or not despite it growing too big:
+
+   .. code:: c
+
+      int outbox_size = esp_mqtt_client_get_outbox_size(client);
+       if (outbox_size > OUTBOX_MAX_ALLOWED SIZE) {
+           if (message_is_important) {
+               esp_mqtt_client_publish(client, topic, data, len, qos, retain);
+           } else {
+               // drop the message, or stop producing new data for some while
+           }
+       } else {
+           // outbox have not became big enough, we can publish normally
+           esp_mqtt_client_publish(client, topic, data, len, qos, retain);
+       }
+
+   .. note::
+
+      This method has an advantage of being more customizable, for example you can publish a notification that the device will stop transmitting for logging purposes, only allow transmissions of most important messages, start collecting data slower, or try sending bigger messages with longer intervals between them.
+
+Maintaining connection
+----------------------
+Behaviour of MQTT client on connection loss can be configured. 
+If `disable_auto_reconnect = true` then automatic reconnection is disabled and the client will disconnect when connection is interrupted or if an error occurs. If auto-reconnect is disabled you can not use `esp_mqtt_client_reconnect()` to reconnect, you will need to use `esp_mqtt_connect` to establish new connection.
+
+When the client is waiting for reconnect it will periodically send reconnect request every `reconnect_timeout_ms` milliseconds. You can also force this request without waiting for the period to pass by calling `esp_mqtt_client_reconnect()`. 
+
+This function is used only for forcing the reconnect request, if you have an active connection `esp_mqtt_client_reconnect` will fail with `ESP_FAIL`
+
+To disconnect from the broker use `esp_mqtt_client_disconnect`. It will perform a clean disconnect and if MQTT 5 is used and the client is configured to will send a disconnect message.
+
+Events
+------
+The following events may be posted by the MQTT client:
+
+* ``MQTT_EVENT_BEFORE_CONNECT``: The client is initialized and about to start connecting to the broker.
+* ``MQTT_EVENT_CONNECTED``: The client has successfully established a connection to the broker. The client is now ready to send and receive data.
+* ``MQTT_EVENT_DISCONNECTED``: The client has aborted the connection due to being unable to read or write data, e.g., because the server is unavailable.
+* ``MQTT_EVENT_SUBSCRIBED``: The broker has acknowledged the client's subscribe request. The event data contains the message ID of the subscribe message.
+* ``MQTT_EVENT_UNSUBSCRIBED``: The broker has acknowledged the client's unsubscribe request. The event data contains the message ID of the unsubscribe message.
+* ``MQTT_EVENT_PUBLISHED``: The broker has acknowledged the client's publish message. This is only posted for QoS level 1 and 2, as level 0 does not use acknowledgements. The event data contains the message ID of the publish message.
+* ``MQTT_EVENT_DATA``: The client has received a publish message. The event data contains: message ID, name of the topic it was published to, received data and its length. For data that exceeds the internal buffer, multiple ``MQTT_EVENT_DATA`` events are posted and :cpp:member:`current_data_offset <esp_mqtt_event_t::current_data_offset>` and :cpp:member:`total_data_len <esp_mqtt_event_t::total_data_len>` from event data updated to keep track of the fragmented message.
+* ``MQTT_EVENT_ERROR``: The client has encountered an error. The field :cpp:type:`error_handle <esp_mqtt_error_codes_t>` in the event data contains :cpp:type:`error_type <esp_mqtt_error_type_t>` that can be used to identify the error. The type of error determines which parts of the :cpp:type:`error_handle <esp_mqtt_error_codes_t>` struct is filled.
+
+Relation between errors and disconnections in MQTT client
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Disconnection can happen for several reasons and they are handled differently by event system.
+
++--------------------------------+-----------------------------+---------------------------------------------------------------------------+
+| Cause of disconnection         | Event(s) produced           | Conditions and details                                                    |
++================================+=============================+===========================================================================+
+| ``esp_mqtt_client_disconnect`` | ``MQTT_EVENT_DISCONNECTED`` | Will be invoked when disconnect message is sent                           |
++--------------------------------+-----------------------------+---------------------------------------------------------------------------+
+| ``esp_mqtt_client_stop``       | *None*                      | No event will be triggered by calling this function                       |
++--------------------------------+-----------------------------+---------------------------------------------------------------------------+
+| Automatic disconnection due to | ``MQTT_EVENT_DISCONNECTED`` | Will be the only event produced                                           | 
+| missing keep-alive packet      |                             |                                                                           |
++--------------------------------+-----------------------------+---------------------------------------------------------------------------+
+| Being unable to send PING      | ``MQTT_EVENT_ERROR``        | Will be produced first if it is impossible to send PING packet due to a   |
+| packet                         |                             | network error                                                             |
+|                                +-----------------------------+---------------------------------------------------------------------------+
+|                                | ``MQTT_EVENT_DISCONNECTED`` |                                                                           |
++--------------------------------+-----------------------------+---------------------------------------------------------------------------+
+| MQTT client unable to transmit | ``MQTT_EVENT_ERROR``        | Will **not** be produced if the disconnection happened due to the network |
+| over the network               |                             | timeout                                                                   |
+|                                +-----------------------------+---------------------------------------------------------------------------+
+|                                | ``MQTT_EVENT_DISCONNECTED`` |                                                                           |
++--------------------------------+-----------------------------+---------------------------------------------------------------------------+
+| MQTT client is unable to       | ``MQTT_EVENT_ERROR``        |                                                                           |
+| connect to the broker          +-----------------------------+---------------------------------------------------------------------------+
+|                                | ``MQTT_EVENT_DISCONNECTED`` |                                                                           |
++--------------------------------+-----------------------------+---------------------------------------------------------------------------+
+| MQTT client is unable to       | ``MQTT_EVENT_ERROR``        | Will be produced if the cause is a network problem or if there was an     |
+| receive a message              |                             | error when transmitting acknowledgement if QoS > 0 is used. Malformed     |
+|                                |                             | message or insufficient input buffer size will also cause the event to be |
+|                                |                             | produced                                                                  |
+|                                +-----------------------------+---------------------------------------------------------------------------+
+|                                | ``MQTT_EVENT_DISCONNECTED`` | Will be produced regardless of ``MQTT_EVENT_ERROR``, but if both are      |
+|                                |                             | produced ``MQTT_EVENT_DISCONNECTED`` will always be the last one          |
++--------------------------------+-----------------------------+---------------------------------------------------------------------------+
+| Timeout when refreshing        | ``MQTT_EVENT_DISCONNECTED`` | Will be the only event produced                                           |
+| connection                     |                             |                                                                           |
++--------------------------------+-----------------------------+---------------------------------------------------------------------------+
+| Poll read timeout              | ``MQTT_EVENT_DISCONNECTED`` | Will be the only event produced                                           |
++--------------------------------+-----------------------------+---------------------------------------------------------------------------+
+
+API Reference
+-------------
+
+.. include-build-file:: inc/mqtt_client.inc
+.. include-build-file:: inc/mqtt5_client.inc
