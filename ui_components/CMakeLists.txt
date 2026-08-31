@@ -11,7 +11,9 @@ set(src_dirs
             ui/dclock
             ui/carousel
             ui_time
-            calendar)
+            calendar
+            fonts
+            xiaozhi_ui)
 
 set(include_dirs
             calculator
@@ -26,7 +28,9 @@ set(include_dirs
             ui/dclock
             ui/carousel
             ui_time
-            calendar)
+            calendar
+            fonts
+            xiaozhi_ui)
 
 set(requires
             lvgl__lvgl

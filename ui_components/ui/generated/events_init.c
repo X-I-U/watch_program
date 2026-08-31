@@ -14,6 +14,7 @@
 #include "game2048_ui.h"
 #include "music_ui.h"
 #include "calendar_ui.h"
+#include "xiaozhi_ui.h"
 
 #if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
 #include "freemaster_client.h"
@@ -411,6 +412,7 @@ static void screen_9_event_handler (lv_event_t *e)
 void events_init_screen_9 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_9, screen_9_event_handler, LV_EVENT_ALL, ui);
+    xiaozhi_ui_screen_created(ui);
 }
 
 

@@ -199,7 +199,16 @@ typedef struct
 	lv_obj_t *screen_9;
 	bool screen_9_del;
 	lv_obj_t *screen_9_img_1;
-	lv_obj_t *screen_9_label_1;
+	lv_obj_t *screen_9_spinner_1;
+	lv_obj_t *screen_9_label_2;
+	lv_obj_t *screen_9_img_2;
+	lv_obj_t *screen_9_img_3;
+	lv_obj_t *screen_9_tileview_1;
+	lv_obj_t *screen_9_tileview_1_tile;
+	lv_obj_t *screen_9_label_3;
+	lv_obj_t *screen_9_label_4;
+	lv_obj_t *screen_9_label_5;
+	lv_obj_t *screen_9_label_6;
 }lv_ui;
 
 typedef void (*ui_setup_scr_t)(lv_ui * ui);
@@ -284,6 +293,8 @@ LV_IMG_DECLARE(_menu_alpha_37x36);
 LV_IMG_DECLARE(_JAY2_alpha_110x109);
 LV_IMG_DECLARE(_delate_alpha_41x25);
 LV_IMG_DECLARE(_xiaozhi_alpha_96x90);
+LV_IMG_DECLARE(_answer_alpha_31x27);
+LV_IMG_DECLARE(_input_alpha_30x31);
 
 LV_FONT_DECLARE(lv_font_montserratMedium_19)
 LV_FONT_DECLARE(lv_font_SourceHanSansSC_Regular_20)

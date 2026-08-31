@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include "esp_log.h"
 #include "esp_check.h"
@@ -30,6 +31,13 @@ static volatile bool s_connected  = false;   /* 已连上服务器 */
 static volatile bool s_session    = false;   /* 音频通道已开 */
 static volatile bool s_listening  = false;   /* 正在采音上传 */
 static volatile bool s_speaking   = false;   /* 正在播 TTS */
+
+/* ---------- 服务层状态(供 UI 查询/门控) ---------- */
+static volatile bool s_connecting  = false;  /* init 进行中 */
+static volatile bool s_need_bind   = false;  /* 未绑定, 等激活码 */
+static volatile bool s_active      = false;  /* UI 页是否激活(门控自动开通道) */
+static xiaozhi_text_cb_t s_text_cb = NULL;   /* 对话文本回调(ws 任务上下文) */
+static char s_activation_code[8]   = {0};    /* 6 位激活码 */
 
 #define MIC_FRAME      960                   /* 采音一帧 60ms @16k(匹配 OPUS 帧长) */
 /* 上行编码 + 下行解码都用官方 esp_audio_codec: mic 任务直接调 enc_process, audio_cb 直接调 dec_process */
@@ -105,8 +113,8 @@ static void xiaozhi_event_cb(esp_xiaozhi_chat_event_t event, void *event_data, v
             if (s_dec_in) {
                 rb_reset(s_dec_in);   /* 清掉缓冲的旧帧, 防下轮播放残留 */
             }
-            /* 连续对话: 说完恢复采音 + 重新告诉服务器"继续听" */
-            if (s_session) {
+            /* 连续对话: 说完恢复采音 + 重新告诉服务器"继续听"(仅当页面激活) */
+            if (s_session && s_active) {
                 s_listening = true;
                 esp_xiaozhi_chat_send_start_listening(s_chat, ESP_XIAOZHI_CHAT_LISTENING_MODE_AUTO);
             }
@@ -119,6 +127,11 @@ static void xiaozhi_event_cb(esp_xiaozhi_chat_event_t event, void *event_data, v
         ESP_LOGI(TAG, "[text] %s: %s",
                  (t->role == ESP_XIAOZHI_CHAT_TEXT_ROLE_USER) ? "user" : "ai",
                  t->text ? t->text : "");
+        /* 推给 UI(ws 任务上下文, UI 必须拷贝文本) */
+        if (s_text_cb) {
+            s_text_cb((t->role == ESP_XIAOZHI_CHAT_TEXT_ROLE_USER) ? "user" : "ai",
+                      t->text ? t->text : "");
+        }
         break;
     }
     case ESP_XIAOZHI_CHAT_EVENT_CHAT_ERROR: {
@@ -209,9 +222,19 @@ static void xiaozhi_play_task(void *arg)
 
 esp_err_t xiaozhi_init(void)
 {
+    /* 幂等保护: 正在连接 / 已初始化(WS 自恢复) → 直接返回, 不重复 init */
+    if (s_connecting) {
+        return ESP_OK;
+    }
+    if (s_chat) {
+        return ESP_OK;
+    }
+    s_connecting = true;
+
     /* 1. 等 WiFi 连上(最多 20s) */
     if (!wifi_wait_connected(20000)) {
         ESP_LOGE(TAG, "WiFi not connected, abort");
+        s_connecting = false;
         return ESP_ERR_NOT_FOUND;
     }
     ESP_LOGI(TAG, "WiFi connected, server: %s", CONFIG_XIAOZHI_OTA_URL);
@@ -230,12 +253,19 @@ esp_err_t xiaozhi_init(void)
         ESP_LOGW(TAG, "get_info failed (0x%x), retry %d/5 ...", ret, attempt);
         vTaskDelay(pdMS_TO_TICKS(2000));
     }
-    ESP_RETURN_ON_ERROR(ret, TAG, "get_info failed after retries");
+    if (ret != ESP_OK) {
+        s_connecting = false;
+        return ret;
+    }
 
     if (info.has_activation_code) {
-        /* 未绑定: 打印 6 位激活码, 去网页控制台添加设备 */
+        /* 未绑定: 记下激活码供 UI 显示, 去网页控制台添加设备 */
+        snprintf(s_activation_code, sizeof(s_activation_code), "%s",
+                 info.activation_code ? info.activation_code : "");
+        s_need_bind  = true;
+        s_connecting = false;
         ESP_LOGW(TAG, "========================================");
-        ESP_LOGW(TAG, "设备未绑定! 6 位激活码 = [ %s ]", info.activation_code);
+        ESP_LOGW(TAG, "设备未绑定! 6 位激活码 = [ %s ]", s_activation_code);
         ESP_LOGW(TAG, "打开 xiaozhi.me 控制台 → 添加设备 → 输入此码");
         ESP_LOGW(TAG, "========================================");
         esp_xiaozhi_chat_free_info(&info);
@@ -245,6 +275,8 @@ esp_err_t xiaozhi_init(void)
     if (info.has_serial_number) {
         ESP_LOGI(TAG, "device already bound (sn=%s)", info.serial_number);
     }
+    s_need_bind  = false;   /* 已绑定 */
+    s_connecting = false;
 
     ESP_LOGI(TAG, "free mem: internal=%zu  total(8bit incl psram)=%zu",
              heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
@@ -357,13 +389,48 @@ esp_err_t xiaozhi_talk(void)
     return ESP_OK;
 }
 
-/* 连续对话保活: 连上且无会话时周期重开音频通道(首次连接 / 服务器关通道后) */
+/* 连续对话保活: 连上且无会话时周期重开音频通道(首次连接 / 服务器关通道后)。
+   只在 UI 页激活(s_active)时自动开, 实现"只有在小智页才听"。 */
 static void xiaozhi_conv_task(void *arg)
 {
     while (1) {
         vTaskDelay(pdMS_TO_TICKS(1000));
-        if (s_connected && !s_session && !s_speaking) {
+        if (s_active && s_connected && !s_session && !s_speaking) {
             xiaozhi_talk();
         }
     }
+}
+
+/* ---------- 服务层接口: 状态查询 / 开关 / 文本回调 ---------- */
+
+xiaozhi_state_t xiaozhi_get_state(void)
+{
+    if (s_connecting) return XIAOZHI_STATE_CONNECTING;
+    if (s_need_bind)  return XIAOZHI_STATE_NEED_BIND;
+    if (s_speaking)   return XIAOZHI_STATE_SPEAKING;
+    if (s_listening)  return XIAOZHI_STATE_LISTENING;
+    if (s_connected)  return XIAOZHI_STATE_CONNECTED;
+    return XIAOZHI_STATE_IDLE;
+}
+
+void xiaozhi_set_active(bool active)
+{
+    s_active = active;
+    if (!active) {
+        /* 离开页: 停聆听/播放, 关音频通道 */
+        s_session = s_listening = s_speaking = false;
+        if (s_chat) {
+            esp_xiaozhi_chat_close_audio_channel(s_chat);
+        }
+    }
+}
+
+void xiaozhi_set_text_cb(xiaozhi_text_cb_t cb)
+{
+    s_text_cb = cb;
+}
+
+const char *xiaozhi_get_activation_code(void)
+{
+    return s_activation_code[0] ? s_activation_code : NULL;
 }

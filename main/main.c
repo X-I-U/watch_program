@@ -13,7 +13,6 @@
 #include "axp2101.h"
 #include "music_core.h"
 #include "mic_driver.h"    /* Step1: MSM261S4030H0R 咪头驱动 */
-#include "xiaozhi.h"       /* Stage B: 小智AI 服务层 */
 #include "rtc_service.h"   /* 时间服务中间层：NTP→RTC、读 RTC */
 #include "ui_time.h"       /* LVGL 绑定层：时间/日期/星期 三个控件 */
 
@@ -59,19 +58,6 @@ static void rtc_sync_task(void *arg)
     esp_err_t ret = rtc_service_sync_from_ntp(60000);   /* 最多等 60s */
     if (ret != ESP_OK) {
         ESP_LOGW(TAG, "NTP->RTC sync failed (ret=%d), display will use RTC as-is", ret);
-    }
-    vTaskDelete(NULL);
-}
-
-/* TEMP: Stage D 自动触发一轮对话(等 WS 连上后), 验证后删除 */
-static void auto_talk_task(void *arg)
-{
-    vTaskDelay(pdMS_TO_TICKS(12000));   /* WS 连上约 9s, 留余量 */
-    for (int i = 0; i < 3; i++) {
-        if (xiaozhi_talk() == ESP_OK) {
-            break;
-        }
-        vTaskDelay(pdMS_TO_TICKS(3000));
     }
     vTaskDelete(NULL);
 }
@@ -143,9 +129,5 @@ void app_main(void)
     }
     xTaskCreate(rtc_display_task, "rtc_disp", 4096, NULL, 5, NULL);
 
-    /* ---- 小智AI: 放 LCD/LVGL 之后初始化(esp_xiaozhi 吃内存, 别抢 LVGL 的 DMA 缓冲) ---- */
-    xiaozhi_init();
-    /* 栈放 PSRAM: open_audio_channel 内部用 cJSON, 栈需求大, 不给内部 RAM 添负担 */
-    xTaskCreatePinnedToCoreWithCaps(auto_talk_task, "auto_talk", 8192, NULL, 4, NULL, tskNO_AFFINITY,
-                                    MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);   /* TEMP: Stage D 自动触发 */
+    /* ---- 小智AI: 不再开机连接, 由 xiaozhi_ui 进小智页时触发(避免未用时占网/耗电) ---- */
 }
