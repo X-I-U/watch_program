@@ -13,7 +13,9 @@ set(src_dirs
             ui_time
             calendar
             fonts
-            xiaozhi_ui)
+            xiaozhi_ui
+            timer_ui
+            ui_battery)
 
 set(include_dirs
             calculator
@@ -30,7 +32,9 @@ set(include_dirs
             ui_time
             calendar
             fonts
-            xiaozhi_ui)
+            xiaozhi_ui
+            timer_ui
+            ui_battery)
 
 set(requires
             lvgl__lvgl

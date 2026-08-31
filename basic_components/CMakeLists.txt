@@ -8,7 +8,8 @@ set(src_dirs
             AUDIO_STREAM
             BASIC_TIMER
             MIC_DRIVER
-            XIAOZHI)
+            XIAOZHI
+            TIMER_SVC)
 
 set(include_dirs
             LCD
@@ -20,7 +21,8 @@ set(include_dirs
             AUDIO_STREAM
             BASIC_TIMER
             MIC_DRIVER
-            XIAOZHI)
+            XIAOZHI
+            TIMER_SVC)
 
 set(requires
             driver

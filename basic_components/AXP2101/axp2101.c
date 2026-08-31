@@ -89,3 +89,53 @@ esp_err_t axp2101_enable_dcdc1(bool enable)
 {
     return axp2101_update(0x80, 0x01, enable ? 0x01 : 0x00);
 }
+
+/* ========== 电池/充电状态 ==========
+ * REG A4H: 电池百分比(E-Gauge 燃料计, 0-100)
+ * REG 00H: bit3=电池在位, bit5=VBUS 在位
+ * REG 01H: bits6:5=电池电流方向(01=充电) */
+int axp2101_get_battery_percent(void)
+{
+    uint8_t v = 0;
+    if (axp2101_read(0xA4, &v) != ESP_OK) {
+        return -1;
+    }
+    return v;
+}
+
+bool axp2101_get_battery_present(void)
+{
+    uint8_t v = 0;
+    if (axp2101_read(0x00, &v) != ESP_OK) {
+        return false;
+    }
+    return (v & 0x08) != 0;   /* bit3 */
+}
+
+bool axp2101_get_vbus_connected(void)
+{
+    uint8_t v = 0;
+    if (axp2101_read(0x00, &v) != ESP_OK) {
+        return false;
+    }
+    return (v & 0x20) != 0;   /* bit5 */
+}
+
+bool axp2101_get_charging(void)
+{
+    uint8_t v = 0;
+    if (axp2101_read(0x01, &v) != ESP_OK) {
+        return false;
+    }
+    return ((v >> 5) & 0x03) == 0x01;   /* 电流方向 01 = 充电 */
+}
+
+int axp2101_get_battery_voltage(void)
+{
+    uint8_t hi = 0, lo = 0;
+    if (axp2101_read(0x34, &hi) != ESP_OK || axp2101_read(0x35, &lo) != ESP_OK) {
+        return -1;
+    }
+    /* 14bit, 1mV/LSB: hi 取低 6 位作为高字节 */
+    return ((hi & 0x3F) << 8) | lo;
+}

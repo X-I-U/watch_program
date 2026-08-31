@@ -15,6 +15,9 @@
 #include "mic_driver.h"    /* Step1: MSM261S4030H0R 咪头驱动 */
 #include "rtc_service.h"   /* 时间服务中间层：NTP→RTC、读 RTC */
 #include "ui_time.h"       /* LVGL 绑定层：时间/日期/星期 三个控件 */
+#include "timer_svc.h"     /* 计时器/秒表服务层(后台常驻) */
+#include "timer_ui.h"      /* 计时器/秒表 UI 绑定层(含全局到点弹窗) */
+#include "ui_battery.h"    /* screen2 电量显示绑定层 */
 
 static SemaphoreHandle_t lvgl_mux = NULL;
 
@@ -46,6 +49,7 @@ static void rtc_display_task(void *arg)
         }
         if (example_lvgl_lock(-1)) {
             ui_time_refresh(&t);
+            ui_battery_refresh();   /* 电量 bar/数字/充电图标(读 AXP, 1s 一次) */
             example_lvgl_unlock();
         }
     }
@@ -104,6 +108,8 @@ void app_main(void)
 
      mic_init();            /* Step1: 咪头驱动初始化 */
 
+     timer_svc_init();      /* 计时器/秒表后台服务(退出页面照样计时) */
+
      lcd_display_init();
      lcd_touch_init();
      lvgl_timer_init(lvgl_init());
@@ -115,6 +121,7 @@ void app_main(void)
     // Lock the mutex due to the LVGL APIs are not thread-safe
     if (example_lvgl_lock(-1)) {
         guider_ui_init();       /* GUI Guider UI */
+        timer_ui_global_init(); /* 计时器到点全局弹窗(常驻定时器 + 注册回调, 需在 LVGL 锁下) */
 
         // Release the mutex
         example_lvgl_unlock();

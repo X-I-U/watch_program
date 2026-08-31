@@ -15,6 +15,7 @@
 #include "music_ui.h"
 #include "calendar_ui.h"
 #include "xiaozhi_ui.h"
+#include "timer_ui.h"
 
 #if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
 #include "freemaster_client.h"
@@ -118,6 +119,34 @@ static void screen_2_img_4_event_handler (lv_event_t *e)
     }
 }
 
+static void screen_2_img_8_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SHORT_CLICKED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.screen_10, guider_ui.screen_10_del, &guider_ui.screen_2_del, setup_scr_screen_10, LV_SCR_LOAD_ANIM_FADE_ON, 200, 200, true, true);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void screen_2_img_9_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SHORT_CLICKED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.screen_11, guider_ui.screen_11_del, &guider_ui.screen_2_del, setup_scr_screen_11, LV_SCR_LOAD_ANIM_FADE_ON, 200, 200, true, true);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void events_init_screen_2 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_2_img_1, screen_2_img_1_event_handler, LV_EVENT_ALL, ui);
@@ -127,6 +156,8 @@ void events_init_screen_2 (lv_ui *ui)
     lv_obj_add_event_cb(ui->screen_2_img_2, screen_2_img_2_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_2_img_3, screen_2_img_3_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_2_img_4, screen_2_img_4_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->screen_2_img_8, screen_2_img_8_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->screen_2_img_9, screen_2_img_9_event_handler, LV_EVENT_ALL, ui);
 }
 
 static void screen_3_img_1_event_handler (lv_event_t *e)
@@ -186,6 +217,7 @@ static void screen_5_img_5_event_handler (lv_event_t *e)
 void events_init_screen_5 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_5_img_5, screen_5_img_5_event_handler, LV_EVENT_ALL, ui);
+    timer_ui_screen_created(ui);
 }
 
 static void screen_6_event_handler (lv_event_t *e)
@@ -413,6 +445,139 @@ void events_init_screen_9 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_9, screen_9_event_handler, LV_EVENT_ALL, ui);
     xiaozhi_ui_screen_created(ui);
+}
+
+static void screen_10_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_GESTURE:
+    {
+        lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
+        switch(dir) {
+        case LV_DIR_RIGHT:
+        {
+            lv_indev_wait_release(lv_indev_get_act());
+            ui_load_scr_animation(&guider_ui, &guider_ui.screen_2, guider_ui.screen_2_del, &guider_ui.screen_10_del, setup_scr_screen_2, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 200, true, true);
+            break;
+        }
+        default:
+            break;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void screen_10_cont_1_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+        lv_obj_clear_flag(guider_ui.screen_10_cont_4, LV_OBJ_FLAG_HIDDEN);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void screen_10_cont_2_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SHORT_CLICKED:
+    {
+        lv_obj_clear_flag(guider_ui.screen_10_cont_8, LV_OBJ_FLAG_HIDDEN);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void screen_10_cont_3_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SHORT_CLICKED:
+    {
+        lv_obj_clear_flag(guider_ui.screen_10_cont_9, LV_OBJ_FLAG_HIDDEN);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void screen_10_img_3_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SHORT_CLICKED:
+    {
+        lv_obj_add_flag(guider_ui.screen_10_cont_4, LV_OBJ_FLAG_HIDDEN);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void screen_10_img_5_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SHORT_CLICKED:
+    {
+        lv_obj_add_flag(guider_ui.screen_10_cont_8, LV_OBJ_FLAG_HIDDEN);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void events_init_screen_10 (lv_ui *ui)
+{
+    lv_obj_add_event_cb(ui->screen_10, screen_10_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->screen_10_cont_1, screen_10_cont_1_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->screen_10_cont_2, screen_10_cont_2_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->screen_10_cont_3, screen_10_cont_3_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->screen_10_img_3, screen_10_img_3_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->screen_10_img_5, screen_10_img_5_event_handler, LV_EVENT_ALL, ui);
+}
+
+static void screen_11_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_GESTURE:
+    {
+        lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
+        switch(dir) {
+        case LV_DIR_RIGHT:
+        {
+            lv_indev_wait_release(lv_indev_get_act());
+            ui_load_scr_animation(&guider_ui, &guider_ui.screen_2, guider_ui.screen_2_del, &guider_ui.screen_11_del, setup_scr_screen_2, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 200, true, true);
+            break;
+        }
+        default:
+            break;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void events_init_screen_11 (lv_ui *ui)
+{
+    lv_obj_add_event_cb(ui->screen_11, screen_11_event_handler, LV_EVENT_ALL, ui);
 }
 
 
