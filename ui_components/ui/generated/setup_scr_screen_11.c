@@ -81,7 +81,7 @@ void setup_scr_screen_11(lv_ui *ui)
     lv_arc_set_bg_angles(ui->screen_11_arc_1, 135, 45);
     lv_arc_set_value(ui->screen_11_arc_1, 70);
     lv_arc_set_rotation(ui->screen_11_arc_1, 1);
-    lv_obj_set_pos(ui->screen_11_arc_1, 52, 6);
+    lv_obj_set_pos(ui->screen_11_arc_1, 48, 2);
     lv_obj_set_size(ui->screen_11_arc_1, 146, 145);
 
     //Write style for screen_11_arc_1, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -171,7 +171,7 @@ void setup_scr_screen_11(lv_ui *ui)
     lv_obj_set_style_pad_right(ui->screen_11_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->screen_11_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->screen_11_label_3, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_11_label_3, &lv_font_montserratMedium_15, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_11_label_3, &lv_font_SourceHanSansSC_Regular_15, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->screen_11_label_3, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->screen_11_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->screen_11_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -179,7 +179,7 @@ void setup_scr_screen_11(lv_ui *ui)
 
     //Write codes screen_11_label_4
     ui->screen_11_label_4 = lv_label_create(ui->screen_11);
-    lv_label_set_text(ui->screen_11_label_4, "日");
+    lv_label_set_text(ui->screen_11_label_4, "六");
     lv_label_set_long_mode(ui->screen_11_label_4, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(ui->screen_11_label_4, 187, 251);
     lv_obj_set_size(ui->screen_11_label_4, 16, 19);
@@ -194,7 +194,7 @@ void setup_scr_screen_11(lv_ui *ui)
     lv_obj_set_style_pad_right(ui->screen_11_label_4, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->screen_11_label_4, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->screen_11_label_4, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_11_label_4, &lv_font_montserratMedium_15, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_11_label_4, &lv_font_SourceHanSansSC_Regular_15, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->screen_11_label_4, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->screen_11_label_4, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->screen_11_label_4, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -225,7 +225,7 @@ void setup_scr_screen_11(lv_ui *ui)
 
     //Write codes screen_11_label_6
     ui->screen_11_label_6 = lv_label_create(ui->screen_11);
-    lv_label_set_text(ui->screen_11_label_6, "日");
+    lv_label_set_text(ui->screen_11_label_6, "五");
     lv_label_set_long_mode(ui->screen_11_label_6, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(ui->screen_11_label_6, 162, 251);
     lv_obj_set_size(ui->screen_11_label_6, 16, 19);
@@ -240,7 +240,7 @@ void setup_scr_screen_11(lv_ui *ui)
     lv_obj_set_style_pad_right(ui->screen_11_label_6, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->screen_11_label_6, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->screen_11_label_6, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_11_label_6, &lv_font_montserratMedium_15, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_11_label_6, &lv_font_SourceHanSansSC_Regular_15, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->screen_11_label_6, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->screen_11_label_6, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->screen_11_label_6, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -248,7 +248,7 @@ void setup_scr_screen_11(lv_ui *ui)
 
     //Write codes screen_11_label_7
     ui->screen_11_label_7 = lv_label_create(ui->screen_11);
-    lv_label_set_text(ui->screen_11_label_7, "日");
+    lv_label_set_text(ui->screen_11_label_7, "四");
     lv_label_set_long_mode(ui->screen_11_label_7, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(ui->screen_11_label_7, 135, 251);
     lv_obj_set_size(ui->screen_11_label_7, 16, 19);
@@ -263,7 +263,7 @@ void setup_scr_screen_11(lv_ui *ui)
     lv_obj_set_style_pad_right(ui->screen_11_label_7, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->screen_11_label_7, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->screen_11_label_7, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_11_label_7, &lv_font_montserratMedium_15, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_11_label_7, &lv_font_SourceHanSansSC_Regular_15, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->screen_11_label_7, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->screen_11_label_7, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->screen_11_label_7, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -271,7 +271,7 @@ void setup_scr_screen_11(lv_ui *ui)
 
     //Write codes screen_11_label_8
     ui->screen_11_label_8 = lv_label_create(ui->screen_11);
-    lv_label_set_text(ui->screen_11_label_8, "日");
+    lv_label_set_text(ui->screen_11_label_8, "三");
     lv_label_set_long_mode(ui->screen_11_label_8, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(ui->screen_11_label_8, 111, 251);
     lv_obj_set_size(ui->screen_11_label_8, 16, 19);
@@ -286,7 +286,7 @@ void setup_scr_screen_11(lv_ui *ui)
     lv_obj_set_style_pad_right(ui->screen_11_label_8, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->screen_11_label_8, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->screen_11_label_8, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_11_label_8, &lv_font_montserratMedium_15, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_11_label_8, &lv_font_SourceHanSansSC_Regular_15, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->screen_11_label_8, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->screen_11_label_8, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->screen_11_label_8, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -294,7 +294,7 @@ void setup_scr_screen_11(lv_ui *ui)
 
     //Write codes screen_11_label_9
     ui->screen_11_label_9 = lv_label_create(ui->screen_11);
-    lv_label_set_text(ui->screen_11_label_9, "日");
+    lv_label_set_text(ui->screen_11_label_9, "二");
     lv_label_set_long_mode(ui->screen_11_label_9, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(ui->screen_11_label_9, 84, 251);
     lv_obj_set_size(ui->screen_11_label_9, 16, 19);
@@ -309,7 +309,7 @@ void setup_scr_screen_11(lv_ui *ui)
     lv_obj_set_style_pad_right(ui->screen_11_label_9, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->screen_11_label_9, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->screen_11_label_9, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_11_label_9, &lv_font_montserratMedium_15, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_11_label_9, &lv_font_SourceHanSansSC_Regular_15, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->screen_11_label_9, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->screen_11_label_9, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->screen_11_label_9, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -317,7 +317,7 @@ void setup_scr_screen_11(lv_ui *ui)
 
     //Write codes screen_11_label_10
     ui->screen_11_label_10 = lv_label_create(ui->screen_11);
-    lv_label_set_text(ui->screen_11_label_10, "日");
+    lv_label_set_text(ui->screen_11_label_10, "一");
     lv_label_set_long_mode(ui->screen_11_label_10, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(ui->screen_11_label_10, 58, 251);
     lv_obj_set_size(ui->screen_11_label_10, 19, 19);
@@ -332,7 +332,7 @@ void setup_scr_screen_11(lv_ui *ui)
     lv_obj_set_style_pad_right(ui->screen_11_label_10, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->screen_11_label_10, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->screen_11_label_10, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->screen_11_label_10, &lv_font_montserratMedium_15, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_11_label_10, &lv_font_SourceHanSansSC_Regular_15, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->screen_11_label_10, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->screen_11_label_10, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->screen_11_label_10, 0, LV_PART_MAIN|LV_STATE_DEFAULT);

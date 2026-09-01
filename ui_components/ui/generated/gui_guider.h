@@ -357,6 +357,7 @@ LV_FONT_DECLARE(lv_font_Acme_Regular_30)
 LV_FONT_DECLARE(lv_font_Acme_Regular_50)
 LV_FONT_DECLARE(lv_font_Acme_Regular_35)
 LV_FONT_DECLARE(lv_font_montserratMedium_20)
+LV_FONT_DECLARE(lv_font_SourceHanSansSC_Regular_15)
 LV_FONT_DECLARE(lv_font_montserratMedium_15)
 
 

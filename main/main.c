@@ -18,6 +18,8 @@
 #include "timer_svc.h"     /* 计时器/秒表服务层(后台常驻) */
 #include "timer_ui.h"      /* 计时器/秒表 UI 绑定层(含全局到点弹窗) */
 #include "ui_battery.h"    /* screen2 电量显示绑定层 */
+#include "step_svc.h"      /* 记步服务层(7天历史+NVS持久化) */
+#include "ui_step.h"       /* screen11 记步 UI 绑定层 */
 
 static SemaphoreHandle_t lvgl_mux = NULL;
 
@@ -50,6 +52,7 @@ static void rtc_display_task(void *arg)
         if (example_lvgl_lock(-1)) {
             ui_time_refresh(&t);
             ui_battery_refresh();   /* 电量 bar/数字/充电图标(读 AXP, 1s 一次) */
+            ui_step_refresh();      /* screen11 记步(不在该页自动空转) */
             example_lvgl_unlock();
         }
     }
@@ -135,6 +138,11 @@ void app_main(void)
         xTaskCreate(rtc_sync_task, "rtc_sync", 4096, NULL, 5, NULL);
     }
     xTaskCreate(rtc_display_task, "rtc_disp", 4096, NULL, 5, NULL);
+
+    /* ---- 记步: BMI270 初始化 + 7天历史 + NVS 持久化(依赖 I2C 和 RTC) ---- */
+    if (step_svc_init() != ESP_OK) {
+        ESP_LOGE(TAG, "step_svc_init failed; step UI will show 0");
+    }
 
     /* ---- 小智AI: 不再开机连接, 由 xiaozhi_ui 进小智页时触发(避免未用时占网/耗电) ---- */
 }

@@ -13,9 +13,24 @@ static int  s_last_pct = -1;
 static bool s_last_chg = false;
 static bool s_last_present = true;
 static int64_t s_last_log_us = 0;
+static lv_obj_t *s_scr_bar = NULL, *s_scr_lbl = NULL, *s_scr_img = NULL;  /* 上次更新过的控件指针 */
 
 void ui_battery_refresh(void)
 {
+    /* 滑走 screen2 会删除、返回会重建 → GUI Guider 静态值(如 label "30%")重新出现。
+       用控件指针变化检测重建, 强制重新应用一次真实电量, 否则变化检测以为没变就漏刷。 */
+    lv_obj_t *bar = guider_ui.screen_2_bar_1;
+    lv_obj_t *lbl = guider_ui.screen_2_label_3;
+    lv_obj_t *img = guider_ui.screen_2_img_10;
+    if (bar != s_scr_bar || lbl != s_scr_lbl || img != s_scr_img) {
+        s_scr_bar = bar;
+        s_scr_lbl = lbl;
+        s_scr_img = img;
+        s_last_pct = -1;         /* 强制重写 */
+        s_last_chg = false;
+        s_last_present = true;
+    }
+
     bool present = axp2101_get_battery_present();
 
     /* 电池不在位(仅 USB 调试) → 显示 0%, 隐藏充电图标 */

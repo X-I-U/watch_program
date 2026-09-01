@@ -15,7 +15,8 @@ set(src_dirs
             fonts
             xiaozhi_ui
             timer_ui
-            ui_battery)
+            ui_battery
+            ui_step)
 
 set(include_dirs
             calculator
@@ -34,7 +35,8 @@ set(include_dirs
             fonts
             xiaozhi_ui
             timer_ui
-            ui_battery)
+            ui_battery
+            ui_step)
 
 set(requires
             lvgl__lvgl

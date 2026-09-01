@@ -16,6 +16,7 @@
 #include "calendar_ui.h"
 #include "xiaozhi_ui.h"
 #include "timer_ui.h"
+#include "ui_step.h"
 
 #if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
 #include "freemaster_client.h"
@@ -177,7 +178,7 @@ static void screen_3_img_1_event_handler (lv_event_t *e)
 void events_init_screen_3 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_3_img_1, screen_3_img_1_event_handler, LV_EVENT_ALL, ui);
-    game2048_ui_screen_created(ui);
+    game2048_ui_screen_created(ui);   /* 重导出后要补 */
 }
 
 static void screen_4_img_1_event_handler (lv_event_t *e)
@@ -197,7 +198,7 @@ static void screen_4_img_1_event_handler (lv_event_t *e)
 void events_init_screen_4 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_4_img_1, screen_4_img_1_event_handler, LV_EVENT_ALL, ui);
-    calendar_ui_screen_created(ui);
+    calendar_ui_screen_created(ui);   /* 重导出后要补 */
 }
 
 static void screen_5_img_5_event_handler (lv_event_t *e)
@@ -217,7 +218,7 @@ static void screen_5_img_5_event_handler (lv_event_t *e)
 void events_init_screen_5 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_5_img_5, screen_5_img_5_event_handler, LV_EVENT_ALL, ui);
-    timer_ui_screen_created(ui);
+    timer_ui_screen_created(ui);   /* 重导出后要补 */
 }
 
 static void screen_6_event_handler (lv_event_t *e)
@@ -384,7 +385,7 @@ void events_init_screen_6 (lv_ui *ui)
     lv_obj_add_event_cb(ui->screen_6_cont_4, screen_6_cont_4_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_6_cont_5, screen_6_cont_5_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_6_cont_6, screen_6_cont_6_event_handler, LV_EVENT_ALL, ui);
-    music_ui_screen_created(ui);
+    music_ui_screen_created(ui);   /* 重导出后要补 */
 }
 
 static void screen_7_event_handler (lv_event_t *e)
@@ -414,7 +415,7 @@ static void screen_7_event_handler (lv_event_t *e)
 void events_init_screen_7 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_7, screen_7_event_handler, LV_EVENT_ALL, ui);
-    calc_ui_screen_created(ui);
+    calc_ui_screen_created(ui);   /* 重导出后要补 */
 }
 
 static void screen_9_event_handler (lv_event_t *e)
@@ -444,7 +445,7 @@ static void screen_9_event_handler (lv_event_t *e)
 void events_init_screen_9 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_9, screen_9_event_handler, LV_EVENT_ALL, ui);
-    xiaozhi_ui_screen_created(ui);
+    xiaozhi_ui_screen_created(ui);   /* 重导出后要补 */
 }
 
 static void screen_10_event_handler (lv_event_t *e)
@@ -578,6 +579,7 @@ static void screen_11_event_handler (lv_event_t *e)
 void events_init_screen_11 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_11, screen_11_event_handler, LV_EVENT_ALL, ui);
+    ui_step_screen_created(ui);   /* 记步绑定层(重导出后要补) */
 }
 
 

@@ -9,7 +9,9 @@ set(src_dirs
             BASIC_TIMER
             MIC_DRIVER
             XIAOZHI
-            TIMER_SVC)
+            TIMER_SVC
+            BMI270
+            STEP_SVC)
 
 set(include_dirs
             LCD
@@ -22,13 +24,16 @@ set(include_dirs
             BASIC_TIMER
             MIC_DRIVER
             XIAOZHI
-            TIMER_SVC)
+            TIMER_SVC
+            BMI270
+            STEP_SVC)
 
 set(requires
             driver
             esp_wifi
             lwip
             esp_timer
+            nvs_flash
             esp_lcd
             esp_lcd_touch_cst816s
             esp_lcd_touch_ft5x06
