@@ -132,14 +132,6 @@ typedef struct
 	lv_obj_t *screen_6_label_2;
 	lv_obj_t *screen_6_cont_2;
 	lv_obj_t *screen_6_label_3;
-	lv_obj_t *screen_6_cont_3;
-	lv_obj_t *screen_6_label_4;
-	lv_obj_t *screen_6_cont_4;
-	lv_obj_t *screen_6_label_5;
-	lv_obj_t *screen_6_cont_5;
-	lv_obj_t *screen_6_label_6;
-	lv_obj_t *screen_6_cont_6;
-	lv_obj_t *screen_6_label_7;
 	lv_obj_t *screen_7;
 	bool screen_7_del;
 	lv_obj_t *screen_7_cont_1;

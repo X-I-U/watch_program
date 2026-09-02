@@ -81,7 +81,7 @@ void setup_scr_screen_11(lv_ui *ui)
     lv_arc_set_bg_angles(ui->screen_11_arc_1, 135, 45);
     lv_arc_set_value(ui->screen_11_arc_1, 70);
     lv_arc_set_rotation(ui->screen_11_arc_1, 1);
-    lv_obj_set_pos(ui->screen_11_arc_1, 48, 2);
+    lv_obj_set_pos(ui->screen_11_arc_1, 49, 0);
     lv_obj_set_size(ui->screen_11_arc_1, 146, 145);
 
     //Write style for screen_11_arc_1, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.

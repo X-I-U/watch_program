@@ -13,16 +13,14 @@
 
 static const char *TAG = "music_core";
 
-typedef struct {
-    uint32_t    id;       /* 网易云歌曲 id，用于拼外链直播地址（须用 uint32，ID 超过 int 最大值） */
-    const char *title;    /* 歌名 */
-} song_t;
-
-/* 测试歌单：晴天 / 花海 */
-static const song_t s_songs[MUSIC_SONG_COUNT] = {
-    { 2652820720, "晴天" },
-    { 2659569861, "花海" },
+/* 歌单：加歌在这里加一行 { 歌名, 播放URL }。
+   UI(播放页列表) 会按这个表动态生成条目，数量不受限制。 */
+static const music_song_t s_songs[] = {
+    { "晴天", "http://music.163.com/song/media/outer/url?id=2652820720.mp3" },
+    { "花海", "http://music.163.com/song/media/outer/url?id=2659569861.mp3" },
+    { "红色高跟鞋", "http://music.163.com/song/media/outer/url?id=2046829393.mp3"}
 };
+#define MUSIC_SONG_COUNT (sizeof(s_songs) / sizeof(s_songs[0]))
 
 /* 命令队列：LVGL 层只投递命令（快速返回），真正的音频控制（stop/run 等深调用）在专用音乐任务里执行。
    原因：LVGL 任务栈只有 4KB，直接调 audio 的 stop/run（HTTP 断开/TLS/I2S 清理）会栈溢出崩溃。 */
@@ -44,23 +42,17 @@ static QueueHandle_t s_cmd_queue;
 static int  s_index   = 0;
 static bool s_playing = false;   /* 意图标记（音乐任务写入，LVGL 只读，单字节访问安全） */
 
-/* 网易云外链直播地址（HTTP，会 302 到 CDN，http_stream 自动跟随） */
-static void build_url(uint32_t id, char *buf, int len)
-{
-    snprintf(buf, len, "http://music.163.com/song/media/outer/url?id=%u.mp3", (unsigned)id);
-}
-
 /* ---------- 以下在音乐任务上下文中执行（栈充足） ---------- */
 static void do_play_index(int index)
 {
-    if (index < 0 || index >= MUSIC_SONG_COUNT) {
+    if (index < 0 || index >= (int)MUSIC_SONG_COUNT) {
         ESP_LOGW(TAG, "bad index %d", index);
         return;
     }
     s_index   = index;
     s_playing = true;
-    char url[128];
-    build_url(s_songs[index].id, url, sizeof(url));
+    /* URL 直接存在歌单表里（HTTP，会 302 到 CDN，http_stream 自动跟随） */
+    const char *url = s_songs[index].url;
     ESP_LOGI(TAG, "play #%d %s (%s) heap=%d", index, s_songs[index].title, url,
              (int)esp_get_free_heap_size());
     mp3_player_play(url);
@@ -99,10 +91,10 @@ static void music_task(void *arg)
                 do_resume();
                 break;
             case MUSIC_CMD_NEXT:
-                do_play_index((s_index + 1) % MUSIC_SONG_COUNT);
+                do_play_index((s_index + 1) % (int)MUSIC_SONG_COUNT);
                 break;
             case MUSIC_CMD_PREV:
-                do_play_index((s_index - 1 + MUSIC_SONG_COUNT) % MUSIC_SONG_COUNT);
+                do_play_index((s_index - 1 + (int)MUSIC_SONG_COUNT) % (int)MUSIC_SONG_COUNT);
                 break;
             default:
                 break;
@@ -133,7 +125,7 @@ void music_core_init(void)
     s_playing = false;
     s_cmd_queue = xQueueCreate(8, sizeof(music_msg_t));
     xTaskCreate(music_task, "music", 8192, NULL, 5, NULL);
-    ESP_LOGI(TAG, "init, %d songs", MUSIC_SONG_COUNT);
+    ESP_LOGI(TAG, "init, %d songs", (int)MUSIC_SONG_COUNT);
 }
 
 void music_core_play_index(int index) { post_cmd(MUSIC_CMD_PLAY_IDX, index); }
@@ -163,7 +155,31 @@ int music_core_get_index(void)
 
 const char *music_core_get_title(void)
 {
+    if (s_index < 0 || s_index >= (int)MUSIC_SONG_COUNT) {
+        return "";
+    }
     return s_songs[s_index].title;
+}
+
+int music_core_get_song_count(void)
+{
+    return (int)MUSIC_SONG_COUNT;
+}
+
+const char *music_core_get_song_title(int index)
+{
+    if (index < 0 || index >= (int)MUSIC_SONG_COUNT) {
+        return "";
+    }
+    return s_songs[index].title;
+}
+
+const char *music_core_get_song_url(int index)
+{
+    if (index < 0 || index >= (int)MUSIC_SONG_COUNT) {
+        return "";
+    }
+    return s_songs[index].url;
 }
 
 int music_core_get_progress_percent(void)

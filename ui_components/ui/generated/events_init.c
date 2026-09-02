@@ -10,6 +10,7 @@
 #include "events_init.h"
 #include <stdio.h>
 #include "lvgl.h"
+/* 各功能屏的自定义绑定层：GUI Guider 重导出后这几行会被抹掉，需重加 */
 #include "calc_ui.h"
 #include "game2048_ui.h"
 #include "music_ui.h"
@@ -17,6 +18,7 @@
 #include "xiaozhi_ui.h"
 #include "timer_ui.h"
 #include "ui_step.h"
+#include "settings_ui.h"
 
 #if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
 #include "freemaster_client.h"
@@ -317,62 +319,6 @@ static void screen_6_cont_2_event_handler (lv_event_t *e)
     }
 }
 
-static void screen_6_cont_3_event_handler (lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    switch (code) {
-    case LV_EVENT_SHORT_CLICKED:
-    {
-        lv_obj_add_flag(guider_ui.screen_6_tileview_1, LV_OBJ_FLAG_HIDDEN);
-        break;
-    }
-    default:
-        break;
-    }
-}
-
-static void screen_6_cont_4_event_handler (lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    switch (code) {
-    case LV_EVENT_SHORT_CLICKED:
-    {
-        lv_obj_add_flag(guider_ui.screen_6_tileview_1, LV_OBJ_FLAG_HIDDEN);
-        break;
-    }
-    default:
-        break;
-    }
-}
-
-static void screen_6_cont_5_event_handler (lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    switch (code) {
-    case LV_EVENT_SHORT_CLICKED:
-    {
-        lv_obj_add_flag(guider_ui.screen_6_tileview_1, LV_OBJ_FLAG_HIDDEN);
-        break;
-    }
-    default:
-        break;
-    }
-}
-
-static void screen_6_cont_6_event_handler (lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    switch (code) {
-    case LV_EVENT_SHORT_CLICKED:
-    {
-        lv_obj_add_flag(guider_ui.screen_6_tileview_1, LV_OBJ_FLAG_HIDDEN);
-        break;
-    }
-    default:
-        break;
-    }
-}
-
 void events_init_screen_6 (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->screen_6, screen_6_event_handler, LV_EVENT_ALL, ui);
@@ -381,10 +327,6 @@ void events_init_screen_6 (lv_ui *ui)
     lv_obj_add_event_cb(ui->screen_6_img_6, screen_6_img_6_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_6_cont_1, screen_6_cont_1_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_6_cont_2, screen_6_cont_2_event_handler, LV_EVENT_ALL, ui);
-    lv_obj_add_event_cb(ui->screen_6_cont_3, screen_6_cont_3_event_handler, LV_EVENT_ALL, ui);
-    lv_obj_add_event_cb(ui->screen_6_cont_4, screen_6_cont_4_event_handler, LV_EVENT_ALL, ui);
-    lv_obj_add_event_cb(ui->screen_6_cont_5, screen_6_cont_5_event_handler, LV_EVENT_ALL, ui);
-    lv_obj_add_event_cb(ui->screen_6_cont_6, screen_6_cont_6_event_handler, LV_EVENT_ALL, ui);
     music_ui_screen_created(ui);   /* 重导出后要补 */
 }
 
@@ -550,6 +492,8 @@ void events_init_screen_10 (lv_ui *ui)
     lv_obj_add_event_cb(ui->screen_10_cont_3, screen_10_cont_3_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_10_img_3, screen_10_img_3_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_10_img_5, screen_10_img_5_event_handler, LV_EVENT_ALL, ui);
+
+    settings_ui_screen_created(ui);
 }
 
 static void screen_11_event_handler (lv_event_t *e)

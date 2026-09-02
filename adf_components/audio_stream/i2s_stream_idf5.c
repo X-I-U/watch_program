@@ -40,7 +40,7 @@ static const char *TAG = "I2S_STREAM_IDF5.x";
 /* [LOCAL PATCH 2026-08-25] 软件音量：写硬件前直接缩放 PCM。
    MAX98357 硬件增益固定 6dB（GAIN 引脚 100kΩ 到地）不可调，ADF 的 ALC 音量刻度太粗（=1 仍很大声），
    故在这里统一缩放。改这个常量调音量，越小越安静。 */
-#define I2S_SOFTWARE_GAIN (0.25f)
+#define I2S_SOFTWARE_GAIN (0.20f)
 
 typedef struct i2s_stream {
     audio_stream_type_t type;

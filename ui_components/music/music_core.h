@@ -3,7 +3,18 @@
 
 #include <stdbool.h>
 
-#define MUSIC_SONG_COUNT 2
+/* 单首歌：歌名 + 可直接播放的 URL（mp3）。
+   加新歌 = 在 music_core.c 的 s_songs 表里加一行即可，
+   播放页 UI 会自动按歌单生成一个可点击的列表条目（歌名/URL 都在这绑定）。
+   网易云外链完整地址格式：http://music.163.com/song/media/outer/url?id=<歌曲id>.mp3 */
+typedef struct {
+    const char *title;   /* 歌名。任意中文都能显示(UI 用 GB2312 全字集字体，同小智对话) */
+    const char *url;     /* 播放地址(mp3/http, 会 302 自动跟随) */
+} music_song_t;
+
+int  music_core_get_song_count(void);   /* 歌单歌曲数(= s_songs 表行数) */
+const char *music_core_get_song_title(int index);
+const char *music_core_get_song_url(int index);
 
 typedef enum {
     MUSIC_STATE_STOPPED = 0,   /* 未在播（含一首播完） */
