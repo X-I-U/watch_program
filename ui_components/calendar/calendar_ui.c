@@ -106,8 +106,10 @@ static void calendar_build_all(void)
     }
 }
 
-/* 窗口平移一格后 snap 回中间元素。dir=+1 往后翻(下月)，-1 往前翻(上月)。
-   snap 回中间后屏幕显示的仍是用户刚看到的那个月，所以视觉无跳变，可无限翻。 */
+/* 窗口平移一格后回中间元素。dir=+1 往后翻(下月)，-1 往前翻(上月)。
+   关键：停到边缘页时用户正盯着的那列(列0/列2)就是新焦点月；回中前先把中间列刷成同一个月，
+   再【无动画瞬时】跳回中间 —— 因中间与当前显示内容相同，跳转画面不变、不会从反方向倒滑进来。
+   跳完后再刷两侧元素(此时已在屏幕外)。这样翻页方向永远与滑动方向一致，可无限翻。 */
 static void calendar_shift_window(int dir)
 {
     int by = s_base_y, bm = s_base_m;
@@ -115,18 +117,28 @@ static void calendar_shift_window(int dir)
     else         { bm--; if (bm < 1)  { bm = 12; by--; } }
     s_base_y = by; s_base_m = bm;
 
-    calendar_set_window();
-    calendar_build_all();
-    calendar_update_title(1);
+    calendar_set_window();   /* s_pages = [焦点-1, 焦点, 焦点+1] */
 
-    /* snap 回中间元素：直接滚到中间列位置（元素1 的 scroll_x = 列宽 240，start_pos=0）。
-       LV_ANIM_ON 让 snap 动画滑回中间（而不是硬跳），配合重建后的内容，视觉上像连续滚动更顺滑。
-       先重置 scroll_dir 避免被边缘限制卡住。 */
+    /* ① 先只刷中间列(新焦点月)。此刻用户看到的边缘列内容也是这个月；
+         中间列在屏幕外(偏左/偏右)，刷它不可见，也不会改变当前显示。 */
+    lv_obj_clean(s_elements[1]);
+    calendar_build_page(s_elements[1], &s_pages[1]);
+
+    /* ② 瞬时跳回中间列(scroll_x=240)：中间==刚看到的月，画面无变化。
+        LV_ANIM_OFF 是关键 —— 不再往回滚动画，避免"下月从反方向滑进来"。 */
     s_shifting = true;
     lv_obj_set_scroll_dir(s_ui->screen_4_carousel_1, LV_DIR_HOR);
     lv_obj_update_layout(s_ui->screen_4_carousel_1);
-    lv_obj_scroll_to(s_ui->screen_4_carousel_1, 240, 0, LV_ANIM_ON);
+    lv_obj_scroll_to(s_ui->screen_4_carousel_1, 240, 0, LV_ANIM_OFF);
     s_shifting = false;
+
+    /* ③ 已回到中间，左右两列在屏幕外，此时再刷它们(为下一次翻页备用)，不会闪。 */
+    lv_obj_clean(s_elements[0]);
+    calendar_build_page(s_elements[0], &s_pages[0]);
+    lv_obj_clean(s_elements[2]);
+    calendar_build_page(s_elements[2], &s_pages[2]);
+
+    calendar_update_title(1);
 }
 
 /* 延迟执行窗口平移：必须等外层 carousel_event_cb 完全结束（它会在我们回调后覆盖 scroll_dir），

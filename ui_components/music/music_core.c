@@ -18,7 +18,9 @@ static const char *TAG = "music_core";
 static const music_song_t s_songs[] = {
     { "晴天", "http://music.163.com/song/media/outer/url?id=2652820720.mp3" },
     { "花海", "http://music.163.com/song/media/outer/url?id=2659569861.mp3" },
-    { "红色高跟鞋", "http://music.163.com/song/media/outer/url?id=2046829393.mp3"}
+    { "红色高跟鞋", "http://music.163.com/song/media/outer/url?id=2046829393.mp3"},
+    { "Take Me Hand", "http://music.163.com/song/media/outer/url?id=2071452224.mp3"},
+    { "Love is gone", "http://music.163.com/song/media/outer/url?id=2724994876.mp3"}
 };
 #define MUSIC_SONG_COUNT (sizeof(s_songs) / sizeof(s_songs[0]))
 

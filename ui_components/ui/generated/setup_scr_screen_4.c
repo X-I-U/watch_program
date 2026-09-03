@@ -240,10 +240,10 @@ void setup_scr_screen_4(lv_ui *ui)
 
     //Write codes screen_4_label_39
     ui->screen_4_label_39 = lv_label_create(ui->screen_4);
-    lv_label_set_text(ui->screen_4_label_39, "八月");
+    lv_label_set_text(ui->screen_4_label_39, "十一月");
     lv_label_set_long_mode(ui->screen_4_label_39, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(ui->screen_4_label_39, 175, 16);
-    lv_obj_set_size(ui->screen_4_label_39, 53, 24);
+    lv_obj_set_pos(ui->screen_4_label_39, 145, 16);
+    lv_obj_set_size(ui->screen_4_label_39, 83, 24);
 
     //Write style for screen_4_label_39, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_border_width(ui->screen_4_label_39, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -281,8 +281,8 @@ void setup_scr_screen_4(lv_ui *ui)
     ui->screen_4_label_40 = lv_label_create(ui->screen_4);
     lv_label_set_text(ui->screen_4_label_40, "2026年");
     lv_label_set_long_mode(ui->screen_4_label_40, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(ui->screen_4_label_40, 77, 16);
-    lv_obj_set_size(ui->screen_4_label_40, 95, 22);
+    lv_obj_set_pos(ui->screen_4_label_40, 63, 16);
+    lv_obj_set_size(ui->screen_4_label_40, 75, 22);
 
     //Write style for screen_4_label_40, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_border_width(ui->screen_4_label_40, 0, LV_PART_MAIN|LV_STATE_DEFAULT);

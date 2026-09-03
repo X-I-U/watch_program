@@ -16,6 +16,7 @@ set(src_dirs
             xiaozhi_ui
             timer_ui
             ui_battery
+            ui_wifi
             ui_step
             settings_ui)
 
@@ -37,6 +38,7 @@ set(include_dirs
             xiaozhi_ui
             timer_ui
             ui_battery
+            ui_wifi
             ui_step
             settings_ui)
 

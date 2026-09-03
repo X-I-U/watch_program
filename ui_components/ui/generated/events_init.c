@@ -492,7 +492,6 @@ void events_init_screen_10 (lv_ui *ui)
     lv_obj_add_event_cb(ui->screen_10_cont_3, screen_10_cont_3_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_10_img_3, screen_10_img_3_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->screen_10_img_5, screen_10_img_5_event_handler, LV_EVENT_ALL, ui);
-
     settings_ui_screen_created(ui);
 }
 

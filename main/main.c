@@ -18,6 +18,7 @@
 #include "timer_svc.h"     /* 计时器/秒表服务层(后台常驻) */
 #include "timer_ui.h"      /* 计时器/秒表 UI 绑定层(含全局到点弹窗) */
 #include "ui_battery.h"    /* screen2 电量显示绑定层 */
+#include "ui_wifi.h"       /* screen2 WiFi 图标绑定层(连上正常/断网变淡) */
 #include "step_svc.h"      /* 记步服务层(7天历史+NVS持久化) */
 #include "ui_step.h"       /* screen11 记步 UI 绑定层 */
 #include "settings_ui.h"   /* screen10 设置板块绑定层(WiFi+时间校准) */
@@ -53,6 +54,7 @@ static void rtc_display_task(void *arg)
         if (example_lvgl_lock(-1)) {
             ui_time_refresh(&t);
             ui_battery_refresh();   /* 电量 bar/数字/充电图标(读 AXP, 1s 一次) */
+            ui_wifi_refresh();      /* screen2 WiFi 图标(已连=正常, 未连=透明度拉低) */
             ui_step_refresh();      /* screen11 记步(不在该页自动空转) */
             settings_ui_refresh();  /* screen10 设置: WiFi 连接状态/弹窗/同步结果 */
             example_lvgl_unlock();

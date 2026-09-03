@@ -86,6 +86,11 @@ static void xiaozhi_esp_event_handler(void *arg, esp_event_base_t base, int32_t 
 /* ---------- audio_callback(websocket任务上下文, 必须轻): 只把 [2B长度][OPUS帧] 写进缓冲, 解码放播放任务 ---------- */
 static void xiaozhi_audio_cb(const uint8_t *data, int len, void *ctx)
 {
+    /* 只在小智页激活时收下行音频：离开页后(可能在听音乐)服务器仍会因空闲超时推来"告别语"的
+       OPUS 帧, 这里直接丢弃不写缓冲, 播放任务没有内容自然就不会出声。 */
+    if (!s_active) {
+        return;
+    }
     if (s_dec_in && len > 0 && len <= 512) {
         uint8_t hdr[2] = { (uint8_t)(len >> 8), (uint8_t)(len & 0xFF) };
         rb_write(s_dec_in, (char *)hdr, 2, pdMS_TO_TICKS(50));
@@ -103,13 +108,23 @@ static void xiaozhi_event_cb(esp_xiaozhi_chat_event_t event, void *event_data, v
     case ESP_XIAOZHI_CHAT_EVENT_CHAT_TTS_STATE: {
         esp_xiaozhi_chat_tts_state_t *st = (esp_xiaozhi_chat_tts_state_t *)event_data;
         if (st->state == ESP_XIAOZHI_CHAT_TTS_STATE_START) {
-            s_listening = false;      /* 停采音(半双工) */
-            s_speaking  = true;
-            spk_open();               /* 借 I2S0 切 16k */
-            ESP_LOGI(TAG, "[tts] speaking start");
+            if (!s_active) {
+                /* 已离开小智页(可能在听音乐/别的界面): 服务器空闲超时的"告别语"等 TTS 直接忽略——
+                   不借 I2S0、不置 s_speaking, 播放任务就不会出声, 不打断正在播放的音乐。 */
+                s_speaking = false;
+                if (s_dec_in) {
+                    rb_reset(s_dec_in);   /* 顺手清掉可能的旧帧 */
+                }
+                ESP_LOGI(TAG, "[tts] speaking start ignored (page inactive)");
+            } else {
+                s_listening = false;      /* 停采音(半双工) */
+                s_speaking  = true;
+                spk_open();               /* 借 I2S0 切 16k */
+                ESP_LOGI(TAG, "[tts] speaking start");
+            }
         } else if (st->state == ESP_XIAOZHI_CHAT_TTS_STATE_STOP) {
             s_speaking = false;
-            spk_close();              /* 恢复 44.1k 还通道 */
+            spk_close();              /* 恢复 44.1k 还通道(若本轮没 open 过, 内部 borrowed 保护直接返回) */
             if (s_dec_in) {
                 rb_reset(s_dec_in);   /* 清掉缓冲的旧帧, 防下轮播放残留 */
             }
@@ -118,7 +133,11 @@ static void xiaozhi_event_cb(esp_xiaozhi_chat_event_t event, void *event_data, v
                 s_listening = true;
                 esp_xiaozhi_chat_send_start_listening(s_chat, ESP_XIAOZHI_CHAT_LISTENING_MODE_AUTO);
             }
-            ESP_LOGI(TAG, "[tts] speaking stop, listening again");
+            if (s_active) {
+                ESP_LOGI(TAG, "[tts] speaking stop, listening again");
+            } else {
+                ESP_LOGI(TAG, "[tts] speaking stop (page inactive)");
+            }
         }
         break;
     }
@@ -417,8 +436,12 @@ void xiaozhi_set_active(bool active)
 {
     s_active = active;
     if (!active) {
-        /* 离开页: 停聆听/播放, 关音频通道 */
+        bool was_speaking = s_speaking;
+        /* 离开页: 停聆听/播放 */
         s_session = s_listening = s_speaking = false;
+        if (was_speaking) {
+            spk_close();   /* 正在播 TTS → 立即归还 I2S0(切回 44.1k), 避免音乐恢复时通道被占用 */
+        }
         if (s_chat) {
             esp_xiaozhi_chat_close_audio_channel(s_chat);
         }
