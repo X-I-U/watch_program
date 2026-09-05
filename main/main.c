@@ -148,5 +148,4 @@ void app_main(void)
         ESP_LOGE(TAG, "step_svc_init failed; step UI will show 0");
     }
 
-    /* ---- 小智AI: 不再开机连接, 由 xiaozhi_ui 进小智页时触发(避免未用时占网/耗电) ---- */
 }

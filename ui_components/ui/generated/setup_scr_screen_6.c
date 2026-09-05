@@ -128,10 +128,10 @@ void setup_scr_screen_6(lv_ui *ui)
     //Write codes screen_6_img_8
     ui->screen_6_img_8 = lv_img_create(ui->screen_6);
     lv_obj_add_flag(ui->screen_6_img_8, LV_OBJ_FLAG_CLICKABLE);
-    lv_img_set_src(ui->screen_6_img_8, &_JAY2_alpha_110x109);
+    lv_img_set_src(ui->screen_6_img_8, &_music10_alpha_110x109);
     lv_img_set_pivot(ui->screen_6_img_8, 50,50);
     lv_img_set_angle(ui->screen_6_img_8, 0);
-    lv_obj_set_pos(ui->screen_6_img_8, 65, 14);
+    lv_obj_set_pos(ui->screen_6_img_8, 62, 18);
     lv_obj_set_size(ui->screen_6_img_8, 110, 109);
 
     //Write style for screen_6_img_8, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -197,6 +197,7 @@ void setup_scr_screen_6(lv_ui *ui)
     lv_obj_set_pos(ui->screen_6_tileview_1, 0, 0);
     lv_obj_set_size(ui->screen_6_tileview_1, 240, 300);
     lv_obj_set_scrollbar_mode(ui->screen_6_tileview_1, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_add_flag(ui->screen_6_tileview_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui->screen_6_tileview_1, LV_OBJ_FLAG_HIDDEN);
 
     //Write style for screen_6_tileview_1, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.

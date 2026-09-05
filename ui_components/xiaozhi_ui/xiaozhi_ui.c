@@ -44,20 +44,24 @@ static bool s_music_was_playing = false;   /* 进页前音乐在播, 离开时�
 static void xiaozhi_ui_cleanup(void);
 
 /* ============================================================
- * 音乐互斥: TTS 和音乐都走 I2S0/MAX98357, 进页暂停、离开恢复
+ * 音乐互斥: TTS 和音乐都走 I2S0/MAX98357。
+ * 进页要"彻底停掉"音乐(而非仅暂停) —— 仅暂停时 http/mp3 仍在后台解码、占内部 RAM,
+ * 会让小智连服务器时内部堆不足, websocket 任务建不起来(Error create websocket task)。
+ * 离开时用 resume: 若引擎已被 stop(STOPPED), resume 会自动重播当前曲。
  * ============================================================ */
 static void pause_music_if_playing(void)
 {
-    if (music_core_is_playing()) {
-        music_core_pause();
-        s_music_was_playing = true;
-    }
+    /* 只要音乐系统存在(播放中 / 或"暂停但仍在后台解码")都无条件彻底停掉,
+       给小智连服务器腾内部 RAM —— 只停 i2s 不够, 解码还在占堆。
+       记录进来前是否在放, 决定离开时要不要重播。 */
+    s_music_was_playing = music_core_is_playing();
+    music_core_stop();
 }
 
 static void resume_music_if_was_playing(void)
 {
     if (s_music_was_playing) {
-        music_core_resume();
+        music_core_resume();   /* 已停则重播当前(需重新联网拉流) */
         s_music_was_playing = false;
     }
 }

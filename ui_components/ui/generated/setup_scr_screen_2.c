@@ -75,7 +75,7 @@ void setup_scr_screen_2(lv_ui *ui)
     //Write codes screen_2_img_1
     ui->screen_2_img_1 = lv_img_create(ui->screen_2_cont_1);
     lv_obj_add_flag(ui->screen_2_img_1, LV_OBJ_FLAG_CLICKABLE);
-    lv_img_set_src(ui->screen_2_img_1, &_gaming_alpha_34x33);
+    lv_img_set_src(ui->screen_2_img_1, &_gaming3_alpha_34x33);
     lv_img_set_pivot(ui->screen_2_img_1, 50,50);
     lv_img_set_angle(ui->screen_2_img_1, 0);
     lv_obj_set_pos(ui->screen_2_img_1, 6, 6);

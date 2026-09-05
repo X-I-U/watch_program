@@ -31,6 +31,7 @@ typedef enum {
     MUSIC_CMD_PLAY_IDX,   /* 播指定 index */
     MUSIC_CMD_PAUSE,
     MUSIC_CMD_RESUME,
+    MUSIC_CMD_STOP,
     MUSIC_CMD_NEXT,
     MUSIC_CMD_PREV,
 } music_cmd_t;
@@ -98,6 +99,10 @@ static void music_task(void *arg)
             case MUSIC_CMD_PREV:
                 do_play_index((s_index - 1 + (int)MUSIC_SONG_COUNT) % (int)MUSIC_SONG_COUNT);
                 break;
+            case MUSIC_CMD_STOP:
+                s_playing = false;
+                mp3_player_stop();   /* 彻底停(释放内部 RAM), 给小智等让内存 */
+                break;
             default:
                 break;
             }
@@ -133,6 +138,7 @@ void music_core_init(void)
 void music_core_play_index(int index) { post_cmd(MUSIC_CMD_PLAY_IDX, index); }
 void music_core_pause(void)           { post_cmd(MUSIC_CMD_PAUSE, 0); }
 void music_core_resume(void)          { post_cmd(MUSIC_CMD_RESUME, 0); }
+void music_core_stop(void)            { post_cmd(MUSIC_CMD_STOP, 0); }
 void music_core_next(void)            { post_cmd(MUSIC_CMD_NEXT, 0); }
 void music_core_prev(void)            { post_cmd(MUSIC_CMD_PREV, 0); }
 

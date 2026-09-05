@@ -28,6 +28,7 @@ void music_core_init(void);
 void music_core_play_index(int index);   /* 播指定歌（0 起） */
 void music_core_pause(void);
 void music_core_resume(void);
+void music_core_stop(void);              /* 彻底停止(停解码/停流), 给其它功能腾内部 RAM; 之后可用 play/resume 重播 */
 void music_core_next(void);
 void music_core_prev(void);
 music_state_t music_core_get_state(void);

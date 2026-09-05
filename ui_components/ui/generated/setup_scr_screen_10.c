@@ -256,6 +256,7 @@ void setup_scr_screen_10(lv_ui *ui)
     lv_obj_set_size(ui->screen_10_cont_4, 240, 300);
     lv_obj_set_scrollbar_mode(ui->screen_10_cont_4, LV_SCROLLBAR_MODE_OFF);
     lv_obj_add_flag(ui->screen_10_cont_4, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui->screen_10_cont_4, LV_OBJ_FLAG_HIDDEN);
 
     //Write style for screen_10_cont_4, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_border_width(ui->screen_10_cont_4, 2, LV_PART_MAIN|LV_STATE_DEFAULT);

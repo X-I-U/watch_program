@@ -15,6 +15,7 @@ void mp3_player_init(void);              /* 初始化并建立持久管线（只
 void mp3_player_play(const char *url);   /* 切到该 URL 并开始播放（自动停止当前） */
 void mp3_player_pause(void);
 void mp3_player_resume(void);
+void mp3_player_stop(void);              /* 彻底停止: 停解码/停流并重置状态(释放内部占用), 之后可再 play */
 mp3_player_state_t mp3_player_get_state(void);
 int  mp3_player_get_progress_percent(void);  /* 0~100 */
 int  mp3_player_get_position_sec(void);

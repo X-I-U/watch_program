@@ -220,6 +220,10 @@ void music_ui_screen_created(lv_ui *ui)
        改用 GB2312 全字集中文字体(同小智对话的 lv_font_sourcesans_16)，任何中文歌名都能显示 */
     lv_obj_set_style_text_font(s_title_label, &lv_font_sourcesans_16,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
+    /* 加宽并居中：GUI Guider 原 label 只有 100px，英文歌名(如 "Take Me Hand")
+       一行放不下会折行截断；放宽到 200px(水平居中于 240 屏宽)，常见歌名单行即可完整显示 */
+    lv_obj_set_size(s_title_label, 200, 24);
+    lv_obj_set_pos(s_title_label, 20, 141);
 
     /* 图标与当前播放状态同步（进入页面时） */
     music_ui_set_playing_icon(music_core_get_state() == MUSIC_STATE_PLAYING);

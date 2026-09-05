@@ -107,16 +107,15 @@ void mp3_player_play(const char *url)
     audio_pipeline_run(s_pipeline);
     s_started = true;
 }
-
+/* 只暂停 i2s 元素(停喇叭输出), http/mp3 继续拉流+解码往缓冲里灌。
+       好处: 连接保持、缓冲保持满, resume 秒回; 坏处: 暂停时后台还在缓冲。
+       (不能整条管线 pause: ADF 的 pause 会关 mp3 解码器 + http 停流,
+        resume 时解码器重开 + 可能要重连 → 播1秒就空缓冲卡 ~2s。) */
 void mp3_player_pause(void)
 {
     if (!s_pipeline) {
         return;
-    }
-    /* 只暂停 i2s 元素(停喇叭输出), http/mp3 继续拉流+解码往缓冲里灌。
-       好处: 连接保持、缓冲保持满, resume 秒回; 坏处: 暂停时后台还在缓冲。
-       (不能整条管线 pause: ADF 的 pause 会关 mp3 解码器 + http 停流,
-        resume 时解码器重开 + 可能要重连 → 播1秒就空缓冲卡 ~2s。) */
+    }  
     audio_element_pause(s_i2s);
 }
 
@@ -127,6 +126,26 @@ void mp3_player_resume(void)
     }
     /* 缓冲在暂停期间已被 http/mp3 灌满, 直接恢复 i2s 即可, 无需等缓冲 */
     audio_element_resume(s_i2s, 0, pdMS_TO_TICKS(2000));
+}
+
+/* 彻底停止: 只停不播(不 set_uri/不 run)。把整条管线 stop 干净并重置,
+   让 http/mp3 停止解码/占缓冲 —— 给其它要内部 RAM 的功能(如小智连服务器)腾内存。
+   之后调用方可用 music_core_play_index/play 重播当前曲。 */
+void mp3_player_stop(void)
+{
+    if (!s_pipeline) {
+        return;
+    }
+    if (s_started) {
+        audio_pipeline_stop(s_pipeline);
+        audio_pipeline_wait_for_stop_with_ticks(s_pipeline, pdMS_TO_TICKS(2000));
+        audio_element_reset_state(s_http);
+        audio_element_reset_state(s_mp3);
+        audio_element_reset_state(s_i2s);
+        audio_pipeline_reset_ringbuffer(s_pipeline);
+        audio_pipeline_reset_items_state(s_pipeline);
+        s_started = false;
+    }
 }
 
 mp3_player_state_t mp3_player_get_state(void)

@@ -36,6 +36,7 @@ static volatile bool s_speaking   = false;   /* 正在播 TTS */
 static volatile bool s_connecting  = false;  /* init 进行中 */
 static volatile bool s_need_bind   = false;  /* 未绑定, 等激活码 */
 static volatile bool s_active      = false;  /* UI 页是否激活(门控自动开通道) */
+static volatile bool s_chat_started = false; /* chat 成功 start 过一次(esp_xiaozhi 自带断线自连) */
 static xiaozhi_text_cb_t s_text_cb = NULL;   /* 对话文本回调(ws 任务上下文) */
 static char s_activation_code[8]   = {0};    /* 6 位激活码 */
 
@@ -239,14 +240,37 @@ static void xiaozhi_play_task(void *arg)
     }
 }
 
+/* 启动小智 chat(websocket/MCP)。成功后 s_chat_started=true。
+   失败时保留 s_chat 等句柄, 下次 xiaozhi_init 会走"只重试 start"分支,
+   避免"init 建好但 start 失败后永远连不上"的卡死。 */
+static esp_err_t xiaozhi_chat_start_wrap(void)
+{
+    esp_err_t ret = esp_xiaozhi_chat_start(s_chat);
+    s_connecting = false;
+    if (ret == ESP_OK) {
+        s_chat_started = true;
+        ESP_LOGI(TAG, "chat started (waiting for events)");
+    } else {
+        s_chat_started = false;
+        ESP_LOGE(TAG, "chat start failed 0x%x (will retry on next xiaozhi page enter)", ret);
+    }
+    return ret;
+}
+
 esp_err_t xiaozhi_init(void)
 {
-    /* 幂等保护: 正在连接 / 已初始化(WS 自恢复) → 直接返回, 不重复 init */
+    /* 幂等保护: 正在连接 / 已成功启动(WS 自恢复) → 直接返回, 不重复 init */
     if (s_connecting) {
         return ESP_OK;
     }
-    if (s_chat) {
+    if (s_chat_started) {
         return ESP_OK;
+    }
+    if (s_chat) {
+        /* 上次 init 建好了 chat 但 start 失败(如内部 RAM 不足) → 只重试 start,
+           编解码器/任务已就绪, 不必整段重来。 */
+        ESP_LOGI(TAG, "retrying chat start (chat handle exists)");
+        return xiaozhi_chat_start_wrap();
     }
     s_connecting = true;
 
@@ -376,8 +400,8 @@ esp_err_t xiaozhi_init(void)
                                     MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);   /* 连续对话保活: 通道关了自动重开 */
     spk_set_gain(0.35f);   /* TTS 满幅+MAX98357高增益→电流大→欠压重启, 压到 1/4 幅度 */
 
-    ESP_RETURN_ON_ERROR(esp_xiaozhi_chat_start(s_chat), TAG, "chat start failed");
-    ESP_LOGI(TAG, "chat started (waiting for events)");
+    esp_err_t start_ret = xiaozhi_chat_start_wrap();
+    ESP_RETURN_ON_ERROR(start_ret, TAG, "chat start failed");
     return ESP_OK;
 }
 
